@@ -26,6 +26,11 @@ agents_list = """
 2: juniorDevGpt - give a the summary of the code you want to generate, and the code will be generated
 """
 
+reevaluateAtEachStep = """
+Each command will be executed by the agent you chose, and the result will be sent to you.
+You will have to analyze the result, and decide what to do next.
+You could continue with the original plan, or change the plan based on the result."""
+
 good_n_bad_examples = """
 
 You should only answer with the tool and nothing else.
@@ -144,7 +149,7 @@ def getDebugGptExampleOutput():
     return example_console_output
 
 
-init = system_init + p.prompting_utils + p.using_steps
+init = system_init + p.prompting_utils + p.using_steps + reevaluateAtEachStep
 tools = p.tools_n_agents_init + tools_list + agents_list
 tech = p.tech_stack + p.tech_rules
 

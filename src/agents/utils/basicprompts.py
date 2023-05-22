@@ -47,7 +47,7 @@ this is an example:
 
 This is the format to use for a step using an agent:
 
-|index|::: |agent|(|command|) - |why|
+|index|::: |agent|(|command|) - |why| 
 
 this is an example:
 
