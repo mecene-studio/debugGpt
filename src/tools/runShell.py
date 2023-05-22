@@ -51,11 +51,11 @@ def runShell(commandRaw: str):
         error = process.stderr.read()
 
         if output:
-            print(output.strip())
+            # print(output.strip())
             shellOutput += output.strip() + "\n"
 
         if error:
-            print(error.strip())
+            # print(error.strip())
             shellOutput += error.strip() + "\n"
 
         # print("polling process:", process.returncode)

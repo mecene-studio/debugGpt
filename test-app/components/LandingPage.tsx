@@ -5,7 +5,7 @@ const LandingPage = () => {
   return (
     <div className={s.container}>
       <span>hello i am the best</span>
-    </div>
+    </div
   );
 };
 

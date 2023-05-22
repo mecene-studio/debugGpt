@@ -1,7 +1,6 @@
-from agents.debugGpt.debugGpt import startDebugGpt
-from openaiLib.chatGpt import askChatGpt
-from tools.writeFile import writeFileToTestApp
+from agents.agent import SeniorDev
 
 
 if __name__ == "__main__":
-    startDebugGpt()
+    agent = SeniorDev()
+    agent.startLoop("build the application")

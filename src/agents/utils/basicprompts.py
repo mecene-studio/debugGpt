@@ -43,7 +43,7 @@ This is the format to use for a step using a tool:
 |index|::: |tool|(|arguments|) - |why|
 
 this is an example:
-1::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
+1 ::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
 
 This is the format to use for a step using an agent:
 
@@ -71,7 +71,7 @@ This is the format to use for a step using a tool:
 |index|::: |tool|(|arguments|) - |why|
 
 this is an example:
-1::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
+1 ::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
 
 When giving your answer, you should list all the steps you are going to take in the format mentioned above.
 You have access to these tools to help you achieve the user's command:

@@ -1,4 +1,3 @@
-
 import agents.utils.basicprompts as p
 
 system_init = """
@@ -37,7 +36,7 @@ tools = p.tools_init + tools_list
 agents = p.agents_init + agents_list
 
 
-def getSeniorDevGptPromptMessages():
+def getJuniorDevPromptMessages():
     plannerPrompt = system_init + agents + reevaluateAtEachStep
 
     promptMessage = {"role": "system", "content": plannerPrompt}

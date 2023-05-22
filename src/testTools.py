@@ -1,7 +1,8 @@
-from tools.executeTool import runShell
-from agents.utils.parseToolUserAnswer import parseToolUserAnswer
+from agents.agent import parseToolUserAnswer
+from cleanConsole import printCode
 from tools.moveFile import moveFileFromTestApp
 from tools.readFile import readFile
+from tools.runShell import runShell
 from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import getAnswersForStackOverflowPost, searchStackOverflow
 from tools.writeFile import writeFileToWorkspace
@@ -145,6 +146,16 @@ def testMoveFile():
     print("answer\n", answer)
 
 
+def testConsole():
+    code = """
+    def hello_world():
+        print('Hello, World!')
+
+    hello_world()
+    """
+    printCode(code)
+
+
 if __name__ == "__main__":
     print("testTools.py")
-    testSearch()
+    testConsole()
