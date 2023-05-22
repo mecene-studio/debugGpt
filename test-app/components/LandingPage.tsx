@@ -1,10 +1,10 @@
-import React from 'react';
-import s from './LandingPage.module.scss';
+import React from "react";
+import s from "./LandingPage.module.scss";
 
 const LandingPage = () => {
   return (
     <div className={s.container}>
-      <h1>Landing Page</h1>
+      <span>hello i am the best</span>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 tools = """
 askStackOverflow(question) : get the first answer to the most similar question on stackoverflow
 searchGoogle(query) : get the snippet of the first 3 results from google
-runCommand(command) : command to execute in the shell
+runCommand(command) : command to execute in the shell. Only run commands that are safe to run like `npm run build` or `ls`. Do not run commands like `rm -rf *` or `killall node`
 readFile(filename) : get the content of the file so you can see what the error is. You don't need to write to the file if you don't want to.
 listFiles() : list the files in the workspace to know what files are available to read or write
 writeFile(filename, ```content```) : write content in the file to fix the error. Always surround the content with backticks: ```content``` because the content can be multiline.
