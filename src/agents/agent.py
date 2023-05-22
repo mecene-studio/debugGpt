@@ -39,12 +39,11 @@ class Agent:
             userMessage = {"role": "user", "content": userContent}
 
             # type: ignore
-            printUser("userMessage: \n" + userMessage.get("content"))
+            printUser("userMessage: \n" + userContent)
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessages(
-                self.promptHistory, self.messageHistory)
+            messages = generateHistoryMessages(self.promptHistory, self.messageHistory)
 
             # print("\n\n################## messages: \n")
             # for i, message in enumerate(messages):
@@ -172,6 +171,8 @@ def parseToolUserAnswer(answer):
         functionName, arguments = answer.split("(", 1)
         arguments = arguments.split(") -", 1)[0]
         arguments = arguments.split(",", 1)
+
+        functionName = functionName.strip()
 
         for i in range(len(arguments)):
             arguments[i] = arguments[i].strip()
