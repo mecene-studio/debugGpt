@@ -149,7 +149,7 @@ def parseAndExecuteTool(answer):
 
 
 def parseToolUserAnswer(answer):
-    # writeFile(components/LandingPage.tsx, ```import React from "react";
+    # 1 ::: writeFile(components/LandingPage.tsx, ```import React from "react";
     # import s from "./LandingPage.module.scss";
 
     # const LandingPage = () => {
@@ -164,8 +164,11 @@ def parseToolUserAnswer(answer):
     # ```)
 
     try:
+        index, answer = answer.split(":::", 1)
+        print("index:", index)
+        print("\n\nanswer:", answer, "\n\n")
         functionName, arguments = answer.split("(", 1)
-        arguments = arguments[:-1]
+        arguments = arguments.split(") -", 1)[0]
         arguments = arguments.split(",", 1)
 
         for i in range(len(arguments)):
