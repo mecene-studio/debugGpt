@@ -1,9 +1,10 @@
 from agents.debugGpt.debugGptPrompt import (
     getDebugGptPromptMessages,
-    getFeedbackFromCodeExecutionPromptMessage,
+    getFeedbackFromCodeExecutionPrompt,
+    getFeedbackFromUserPrompt,
 )
 from agents.utils.generateHistoryMessages import generateHistoryMessages
-from agents.utils.parseToolUserAnswer import parseToolUserAnswer
+from agents.utils.parseToolUserAnswer import parseAndExecuteTool, parseToolUserAnswer
 from tools.executeTool import executeTool
 
 from openaiLib.chatGpt import askChatGpt
@@ -14,6 +15,7 @@ def startDebugGpt():
     historyMessages = []
 
     answer = "runCommand(npm run build)"  # hardcode the first command
+    print("first command:\n", answer)
 
     maxIterations = 50
     for i in range(maxIterations):
@@ -24,15 +26,24 @@ def startDebugGpt():
 
         historyMessages.append(assistantMessage)
 
-        functionName, arguments = parseToolUserAnswer(answer)
+        userContent = "DEFAULT USER CONTENT"
 
-        if functionName == "endDebugging":
-            return "Debugging ended"
+        # wait for user input to continue
+        inputted = input(
+            "\nPress Enter to continue, Type 't' to tell debugGpt to try again or type anything to send it as feedback:"
+        )
+        if inputted == "":
+            print("Continuing...")
+            userContent = parseAndExecuteTool(answer)
+        elif inputted == "t" or inputted == "T":
+            print("Trying again...")
+            userContent = getFeedbackFromUserPrompt("Try something else")
+        else:
+            print("sending feedback...")
+            print("feedback:", inputted)
+            userContent = getFeedbackFromUserPrompt(inputted)
 
-        print("shell output:\n ")
-        output = executeTool(functionName, arguments)
-
-        userMessage = getFeedbackFromCodeExecutionPromptMessage(functionName, output)
+        userMessage = {"role": "user", "content": userContent}
 
         print("userMessage: \n", userMessage.get("content"))
 
@@ -46,8 +57,5 @@ def startDebugGpt():
 
         print("\n\n################## answer from askDebugGpt: \n")
         answer = askChatGpt(messages)
-
-        # wait for user input to continue
-        input("\nPress Enter to continue...")
 
     return f"INTERNAL ERROR: askDebugGpt reached maxIterations: {maxIterations} without reaching endDebugging"

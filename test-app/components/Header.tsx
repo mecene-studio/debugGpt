@@ -1,10 +1,16 @@
 import React from 'react';
+import Link from 'next/link';
 import s from './Header.module.scss';
+import Logo from './Logo';
 
-const Header = () => {
+const Header: React.FC = () => {
   return (
     <header className={s.container}>
-      <h1>Header</h1>
+      <Link href="/">
+        <a>
+          <Logo />
+        </a>
+      </Link>
     </header>
   );
 };

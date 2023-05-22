@@ -166,3 +166,4 @@ gcloud/
 .vscode/
 
 node_modules/
+test-app/.next/

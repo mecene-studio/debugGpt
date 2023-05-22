@@ -1,30 +1,36 @@
-system_init = """
-You are a Next.js / Typescript developer. You have to build the app successfully using `npm run lint`, fix any issue, then `npm run build` and then fix any errors that comes up.
+tools = """
+askStackOverflow(question) : get the first answer to the most similar question on stackoverflow
+searchGoogle(query) : get the snippet of the first 3 results from google
+runCommand(command) : command to execute in the shell
+readFile(filename) : get the content of the file so you can see what the error is. You don't need to write to the file if you don't want to.
+listFiles() : list the files in the workspace to know what files are available to read or write
+writeFile(filename, ```content```) : write content in the file to fix the error. Always surround the content with backticks: ```content``` because the content can be multiline.
+"""
+
+# moveFile(filename, newfilename) : move the file to fix the error
+
+
+system_init = (
+    """
+You are a Next.js / Typescript developer. You have to build the app successfully using `npm run build` and then fix any errors that comes up.
 Do not use `npm run dev`.
 
 In react, import components from files in the same folder using `import Component from './Component'` and not `import Component from './Component/Component.tsx'`.
 
-You can use the following tools to debug the app and fix the errors:
+You can use the following tools to debug the app and fix the errors:"""
+    + tools
+    + """You should only answer with the tool and nothing else.
 
-askStackOverflow(question) : get the first answer to the most similar question on stackoverflow
-runCommand(command) : command to execute in the shell
-readFile(filename) : get the content of the file so you can see what the error is. You don't need to write to the file if you don't want to.
-listFiles() : list the files in the workspace to know what files are available to read or write
-moveFile(filename, newfilename) : move the file to fix the error
-writeFile(filename, ```content```) : write content in the file to fix the error. Always surround the content with backticks: ```content``` because the content can be multiline.
-
-You should only answer with the tool and nothing else.
-
-Good Answer:
+Good Answer (good because it only uses the tool):
 runCommand(npm run build)
 
-Bad Answer:
+Bad Answer (bad because there is extra text):
 I would like to execute the readFile command to check the content of the LandingPage.tsx file.
 
-Good Answer:
+Good Answer (good because it only uses the tool):
 readFile(components/LandingPage.tsx)
 
-Bad Answer:
+Bad Answer (bad because there is only 1 backtick instead of 3):
 writeFile(components/LandingPage.tsx,`import React from "react";
 import s from "./LandingPage.module.scss";
 
@@ -39,7 +45,7 @@ const LandingPage = () => {
 export default LandingPage;
 `)
 
-Good Answer:
+Good Answer (good because there are 3 backticks around the content):
 writeFile(components/LandingPage.tsx,```import React from "react";
 import s from "./LandingPage.module.scss";
 
@@ -55,6 +61,7 @@ export default LandingPage;
 ```)
 
 """
+)
 
 
 example_console_command = """npm run build"""
@@ -135,7 +142,7 @@ def getDebugGptPromptMessages():
     return [promptMessage]
 
 
-def getFeedbackFromCodeExecutionPromptMessage(command, output):
+def getFeedbackFromCodeExecutionPrompt(command, output):
     # max length of output is 1000 characters
     output = output[-1000:]
 
@@ -149,6 +156,14 @@ What is the next command you would like to execute?
 Answer with the command only and nothing else.
 """
 
-    promptMessage = {"role": "user", "content": prompt}
+    return prompt
 
-    return promptMessage
+
+def getFeedbackFromUserPrompt(feedback):
+    prompt = f"""The user stopped you from running the command and gave you this feedback:
+{feedback}
+
+What is the next command you would like to execute?
+Answer with the command only and nothing else.
+"""
+    return prompt

@@ -1,4 +1,7 @@
-from agents.utils.generateHistoryMessages import generateHistoryMessages
+from agents.utils.generateHistoryMessages import (
+    generateHistoryMessages,
+    generateHistoryMessagesComplicated,
+)
 
 
 def testHistory():
@@ -6,46 +9,33 @@ def testHistory():
     historyMessages = [
         {
             "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
+            "content": "user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0",
         },
-        {"role": "system", "content": "42"},
+        {
+            "role": "system",
+            "content": "system1system1system1system1system1system1system1system1system1system1system1system1system1system1system1system1",
+        },
         {
             "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
+            "content": "user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2",
         },
-        {"role": "system", "content": "41"},
+        {
+            "role": "system",
+            "content": "system3system3system3system3system3system3system3system3system3system3system3system3system3system3system3system3",
+        },
         {
             "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
+            "content": "user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4",
         },
-        {"role": "system", "content": "40"},
         {
-            "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
-        },
-        {"role": "system", "content": "39"},
-        {
-            "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
-        },
-        {"role": "system", "content": "38"},
-        {
-            "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
-        },
-        {"role": "system", "content": "37"},
-        {
-            "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
-        },
-        {"role": "system", "content": "36"},
-        {
-            "role": "user",
-            "content": "what is the meaning of life aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?",
+            "role": "system",
+            "content": "system5system5system5system5system5system5system5system5system5system5system5system5system5system5system5system5",
         },
     ]
-    messages = generateHistoryMessages(startingMessages, historyMessages)
-    print("messages", messages)
+    messages = generateHistoryMessagesComplicated(startingMessages, historyMessages)
+    print("\n\nmessages:", messages, "\n\n")
+    for message in messages:
+        print(message.get("role"), ":\n", message.get("content"))
 
 
 if __name__ == "__main__":

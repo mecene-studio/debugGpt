@@ -46,9 +46,9 @@ def runShell(commandRaw: str):
     # Read and print the output in real-time
     while True:
         # print("waiting for output")
-        output = process.stdout.readline()
+        output = process.stdout.read()
         # print("waiting for error")
-        error = process.stderr.readline()
+        error = process.stderr.read()
 
         if output:
             # print(output.strip())

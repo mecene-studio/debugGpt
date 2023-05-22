@@ -5,10 +5,10 @@ DebugGpt is a Python application that uses AI to automatically debug Next.js app
 ## Installation
 
 To install DebugGpt, follow these steps:
-
-1. Clone the repository to your local machine.
-2. Install the required dependencies by running `pip install -r requirements.txt`.
-3. Rename the .env.example to .env and and the variables
+1. Clone the repository to your local machine
+2. Install the required dependencies by running `pip install -r requirements.txt`
+3. Rename the .env.example to .env and add the variables
+4. Install Node.js 18 for the test app
 
 ## Usage
 

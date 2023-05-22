@@ -6,7 +6,12 @@ from tools.searchGoogle import getLinksFromGoogle
 def searchStackOverflow(query):
     query = query.replace('"', "").replace("'", "")
     newQuery = f"site:stackoverflow.com {query}"
+    print("stack overflow query")
+    print(newQuery, "\n")
     links = getLinksFromGoogle(newQuery)
+
+    if len(links) == 0:
+        return "No results found"
 
     # print("links", links)
     link = links[0]

@@ -2,6 +2,7 @@ from tools.listFiles import listFilesFromTestApp
 from tools.moveFile import moveFileFromTestApp
 from tools.readFile import readFileFromTestApp
 from tools.runShell import runShell
+from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import searchStackOverflow
 from tools.writeFile import writeFileToTestApp
 
@@ -17,6 +18,8 @@ def executeTool(functionName, arguments):
         return moveFileFromTestApp(arguments[0], arguments[1])
     elif functionName == "askStackOverflow":
         return searchStackOverflow(arguments[0])
+    elif functionName == "searchGoogle":
+        return searchGoggleCustom(arguments[0])
     elif functionName == "writeFile":
         return writeFileToTestApp(arguments[0], arguments[1].replace("```", ""))
     elif functionName == "endDebugging":

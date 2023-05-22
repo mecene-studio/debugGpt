@@ -2,7 +2,7 @@ from tools.executeTool import runShell
 from agents.utils.parseToolUserAnswer import parseToolUserAnswer
 from tools.moveFile import moveFileFromTestApp
 from tools.readFile import readFile
-from tools.searchGoogle import searchGoggleCustom, searchGoggleLangChain
+from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import getAnswersForStackOverflowPost, searchStackOverflow
 from tools.writeFile import writeFileToWorkspace
 from tools.listFiles import listFilesFromTestApp
@@ -28,7 +28,7 @@ def testListFiles():
 
 
 def testSearch():
-    query = "Stackoverflow: 'Next.js Module not found: Can't resolve'"
+    query = "Cannot find module @lucide/react"
     results = searchGoggleCustom(query)
     print("results\n", results)
 
@@ -129,7 +129,7 @@ def testRunShell():
 
 
 def testStackOverflow():
-    query = "Next.js Module not found: Can't resolve"
+    query = "Cannot find module '@lucide/react'"
     # postId = "44439205"
     # results = getAnswersForStackOverflowPost(postId)
     # print("results\n", results)
@@ -147,4 +147,4 @@ def testMoveFile():
 
 if __name__ == "__main__":
     print("testTools.py")
-    testMoveFile()
+    testSearch()
