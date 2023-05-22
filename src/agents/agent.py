@@ -38,11 +38,13 @@ class Agent:
         for i in range(maxIterations):
             userMessage = {"role": "user", "content": userContent}
 
-            printUser("userMessage: \n" + userMessage.get("content"))  # type: ignore
+            # type: ignore
+            printUser("userMessage: \n" + userMessage.get("content"))
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessages(self.promptHistory, self.messageHistory)
+            messages = generateHistoryMessages(
+                self.promptHistory, self.messageHistory)
 
             # print("\n\n################## messages: \n")
             # for i, message in enumerate(messages):
@@ -122,7 +124,7 @@ def executeToolOrAgent(functionName, arguments):
         return listFilesFromTestApp()
     elif functionName == "moveFile":
         return moveFileFromTestApp(arguments[0], arguments[1])
-    elif functionName == "askStackOverflow":
+    elif functionName == "searchStackOverflow":
         return searchStackOverflow(arguments[0])
     elif functionName == "searchGoogle":
         return searchGoggleCustom(arguments[0])

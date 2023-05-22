@@ -16,18 +16,17 @@ You will have to analyze the result, and decide what to do next.
 You could continue with the original plan, or change the plan based on the result."""
 
 tools_list = """
-1: searchDuckDuckGo - to search for information
+1: searchGoogle - to search the web for answers, not code specific
 2: writeFile - to write code in a file
 3: readFile - to read code from a file
 4: listFiles - to list the files in the workspace to know what files are available to read or write
 5: generateCode - to generate code using by giving a prompt to the GPT-3-5-turbo model
 6: finishedanswer - to finish your answer and send it to the user
+7: searchStackOverflow - to search for answers to your coding questions
 """
 
 agents_list = """
-0: completePlan - end the conversation once the plan is executed
 1: searchGpt - give a query and receive a summary of the first results of a google search
-2: juniorDevGpt - give a the summary of the code you want to generate, and the code will be generated
 """
 
 testUserPrompt = """Code an app that is tinder for dogs"""
@@ -37,7 +36,7 @@ agents = p.agents_init + agents_list
 
 
 def getJuniorDevPromptMessages():
-    plannerPrompt = system_init + agents + reevaluateAtEachStep
+    plannerPrompt = system_init + agents + tools
 
     promptMessage = {"role": "system", "content": plannerPrompt}
 

@@ -73,9 +73,21 @@ export default LandingPage;
 ```)
 """
 
+remember = """
+Only output an answer using the formats described above.
+Do not start your answer with Sure, Ok, or any other word.
+Your answer should always start with a number, followed by 3 colons, followed by the command you want to execute.
+
+Once a step is done and you have the result, you remove the step from the plan and continue with the next step.
+
+Also, remember you should prioritize using juniorDevGpt to generate code, and only use the other tools when you can't use juniorDevGpt.
+Just like in a company, you should delegate as much as possible to juniorDevGpt, and only do the work yourself when you have to.
+You are more skilled at critical thinking and problem solving, so you should focus on that, and let juniorDevGpt do the tedious work.
+"""
+
 
 init = system_init + p.prompting_utils + p.using_steps + reevaluateAtEachStep
-tools = p.tools_n_agents_init + tools_list + agents_list
+tools_n_agents = p.tools_n_agents_init + tools_list + agents_list
 tech = p.tech_stack + p.tech_rules
 
 realquick = """You are a planner AI. Your goal is to debug a web application, but you need to do everything through JuniorDevGpt.
@@ -86,8 +98,9 @@ Answer with the command only and nothing else."""
 
 
 def getSeniorDevPromptMessages():
-    # promptMessage = [{"role": "system", "content": init + tools + tech}]
-    promptMessage = [{"role": "system", "content": realquick}]
+    promptMessage = [
+        {"role": "system", "content": init + tools_n_agents + tech + good_n_bad_examples + remember}]
+    # promptMessage = [{"role": "system", "content": realquick}]
     return promptMessage
 
 
