@@ -33,7 +33,7 @@ agents_list = """
 good_n_bad_examples = """
 
 Good Answer:
-1 ::: juniorDevGpt(build the application and fix any errors)
+1 ::: runCommand(npm run build)
 
 Bad Answer (bad because there is extra text):
 2 ::: I would like to execute the readFile command to check the content of the LandingPage.tsx file.
@@ -72,14 +72,46 @@ export default LandingPage;
 ```)
 """
 
+remember = """
+When you want to tell the user something, you need to put your message in betwen *** and ***.
+When you want to output the plan, you need to put it in between $$$ and $$$.
+When you want to output code, you need to put it in between ``` and ```.
+
+The format for your answer should be:
+*** | message | ***
+$$$ | plan | $$$
+``` | code | ```
+
+Only output an answer using the formats described above.
+
+Don't EVER write anything outside of the *** and *** tags, $$$ and $$$ tags, or ``` and ``` tags.
+IF you do it, an innocent woman will die.
+
+Here is a correct answer:
+*** To build the application, we need to make sure there are no errors in the code, and then run the build command ***
+$$$
+1 ::: juniorDevGpt ( lint the application and fix any errors )
+2 ::: juniorDevGpt ( build the application and fix any errors )
+$$$
+
+
+You can only use tools and agents that are available to you. You can't invent new tools or agents.
+
+Once a step is done and you have the result, you remove the step from the plan and continue with the next step.
+
+Also, remember you should prioritize using juniorDevGpt to generate code, and only use the other tools when you can't use juniorDevGpt.
+Just like in a company, you should delegate as much as possible to juniorDevGpt, and only do the work yourself when you have to.
+You are more skilled at critical thinking and problem solving, so you should focus on that, and let juniorDevGpt do the tedious work.
+"""
+
 testUserPrompt = """Code an app that is tinder for dogs"""
 
-tools = p.tools_init + tools_list
-agents = p.agents_init + agents_list
+tools_n_agents = p.tools_n_agents_init + tools_list + agents_list
 
 
 def getJuniorDevPromptMessages():
-    plannerPrompt = system_init + agents + tools
+    plannerPrompt = system_init + tools_n_agents + \
+        good_n_bad_examples + remember + reevaluateAtEachStep
 
     promptMessage = {"role": "system", "content": plannerPrompt}
 

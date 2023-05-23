@@ -1,5 +1,5 @@
 prompting_utils = """
-Anytime you see ||, you should assume the text inside the || is a variable, and you should replace it with the value of the variable.
+Anytime you see | |, you should assume the text inside the | | is a variable, and you should replace it with the value of the variable.
 """
 
 using_steps = """
@@ -40,14 +40,14 @@ why being the reason why you are using this tool, which means what you are tryin
 
 This is the format to use for a step using a tool:
 
-|index|::: |tool|(|arguments|) - |why|
+| index | ::: | tool |( | arguments | ) - | why |
 
 this is an example:
 1 ::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
 
 This is the format to use for a step using an agent:
 
-|index|::: |agent|(|command|) - |why| 
+| index | ::: | agent | ( | command | ) - | why | 
 
 this is an example:
 
@@ -87,11 +87,11 @@ why being the reason why you are using this agent, which means what you are tryi
 
 This is the format to use for a step using an agent:
 
-|index|::: |agent|(|command|) - |why|
+| index | ::: | agent | ( | command | ) - | why |
 
 this is an example:
 
-1 ::: searchGpt(give me a tutorial on how to create a Next.js app with Typescript and Sass modules) - To find out how to create an app using my technoliogies.
+1 ::: searchGpt ( give me a tutorial on how to create a Next.js app with Typescript and Sass modules ) - To find out how to create an app using my technoliogies.
 
 When giving your answer, you should list all the steps you are going to take in the format mentioned above.
 You have access to these agents to help you achieve the user's command:
