@@ -1,5 +1,5 @@
-import React from 'react';
-import s from './Button.module.scss';
+import React from "react";
+import s from "./Button.module.scss";
 
 interface ButtonProps {
   onClick: () => void;
@@ -8,7 +8,7 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({ onClick, text }) => {
   return (
-    <button className={s.button} onClick={onClick}>
+    <button className={s.button} onClick={onClick()}>
       {text}
     </button>
   );
