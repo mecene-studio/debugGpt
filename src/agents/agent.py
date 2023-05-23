@@ -1,3 +1,4 @@
+import re
 from agents.agentPrompt import getFeedbackFromCodeExecutionPrompt
 from agents.utils.juniordevprompt import getJuniorDevPromptMessages
 from agents.utils.seniordevprompt import (
@@ -28,9 +29,9 @@ class Agent:
     def speak(self, state):
         raise NotImplementedError
 
-    def startLoop(self, prompt):
+    def startLoop(self, prompt: str):
         # answer = "runCommand(npm run build)"  # hardcode the first command
-        # print("first command:\n", answer)
+        # print("initial prompt:\n", prompt)
 
         userContent = prompt
 
@@ -44,8 +45,7 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessages(
-                self.promptHistory, self.messageHistory)
+            messages = generateHistoryMessages(self.promptHistory, self.messageHistory)
 
             # print("\n\n################## messages: \n")
             # for i, message in enumerate(messages):
@@ -144,7 +144,7 @@ def parseAndExecuteTool(answer):
         print("shell output:\n ")
         output = executeToolOrAgent(functionName, arguments)
 
-        return getFeedbackFromCodeExecutionPrompt(functionName, output)
+        return getFeedbackFromCodeExecutionPrompt(functionName, output)  # type: ignore
 
     except Exception as e:
         print(e)
@@ -167,18 +167,48 @@ def parseToolUserAnswer(answer):
     # ```)
 
     try:
-        index, answer = answer.split(":::", 1)
-        print("index:", index)
-        print("\n\nanswer:", answer, "\n\n")
-        functionName, arguments = answer.split("(", 1)
-        arguments = arguments.split(") -", 1)[0]
-        arguments = arguments.split(",", 1)
+        explanation, commands = answer.split("$$$", 1)
+        commands = commands.split("$$$")[0]
+
+        index, answer = commands.split(":::", 1)
+        firstCommand = answer.split(":::", 1)[0].strip()
+
+        # if firstCommand ends with \n2, \n1 or any number, remove it
+        if firstCommand[-1].isdigit():
+            firstCommand = firstCommand.rsplit("\n", 1)[0]
+
+        functionName, arguments = firstCommand.split("(", 1)
+        arguments_reversed = arguments[::-1]
+        arguments_reversed = arguments_reversed.split(")", 1)[1]
+        arguments = arguments_reversed[::-1]
+
+        argumentsList = splitByCommaButNotByCodeblock(arguments)
+        # split by , but not by , inside ``` ```
 
         functionName = functionName.strip()
 
-        for i in range(len(arguments)):
-            arguments[i] = arguments[i].strip()
+        for i in range(len(argumentsList)):
+            argumentsList[i] = argumentsList[i].strip()
 
-        return functionName, arguments
+        return functionName, argumentsList
     except:
         raise Exception("Invalid answer format")
+
+
+def splitByCommaButNotByCodeblock(string):
+    code_blocks = re.findall(r"```[\s\S]+?```", string)  # Extract code blocks
+    placeholders = []  # Placeholder strings for code blocks
+    for i, block in enumerate(code_blocks):
+        placeholder = f"__CODEBLOCK_{i}__"
+        string = string.replace(block, placeholder)
+        placeholders.append(placeholder)
+
+    parts = re.split(
+        r",(?![^`]*`[^`]*`)", string
+    )  # Split by comma excluding code blocks
+
+    # Replace back the code blocks
+    for i, placeholder in enumerate(placeholders):
+        parts = [part.replace(placeholder, code_blocks[i]) for part in parts]
+
+    return parts

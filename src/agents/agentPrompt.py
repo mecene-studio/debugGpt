@@ -1,4 +1,4 @@
-def getFeedbackFromCodeExecutionPrompt(command, output):
+def getFeedbackFromCodeExecutionPrompt(command, output: str):
     # max length of output is 1000 characters
     output = output[-1000:]
 

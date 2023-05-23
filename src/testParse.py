@@ -40,15 +40,17 @@ def testHistory():
 
 
 def testParseTools():
-    answer = """1 ::: runCommand(npm run lint) - To check for any linting errors in the code.
-2 ::: runCommand(npm run build) - To build the application.
-3 ::: runCommand(npm start) - To start the application and check if it is running correctly.
-4 ::: If there are any errors, use the readFile tool to read the error message and fix the error accordingly.
-5 ::: Once the application is running correctly, use the finishedanswer tool to let the user know that the application has been built successfully."""
+    answer = """*** To build the application, we need to make sure there are no errors in the code, and then run the build command ***
+$$$
+0 ::: juniorDevGpt ( ``` printlen(432,pfds ) ```, yeah for sure ) - this is a test
+1 ::: juniorDevGpt ( lint the application and fix any errors ) - wow it sure looks good here
+$$$"""
 
     functionName, arguments = parseToolUserAnswer(answer)
     print("functionName:", functionName)
-    print("arguments:", arguments)
+    # print("arguments:", arguments)
+    for i, arg in enumerate(arguments):
+        print("argument", i, ":", arg)
 
 
 if __name__ == "__main__":
