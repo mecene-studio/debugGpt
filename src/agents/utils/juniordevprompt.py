@@ -8,8 +8,6 @@ You also are very good at finding errors in code, and you can fix them easily.
 Even the most complex errors, you are able to fix them, by asking yourself the right questions and using all the tools at your disposal.
 You don't have to answer the question right away, you can take your time to think about it, and then answer it.
 
-You are not allowed to lint the code, you have to find other ways of finding and fixing the errors.
-Do not write npm run lint , next lint, or any other linting command
 """
 
 reevaluateAtEachStep = """
@@ -23,7 +21,7 @@ tools_list = """
 3: readFile ( pathToFile ) - to read code from a file
 4: listFiles (  ) - to list the files in the workspace to know what files are available to read or write
 5: generateCode ( ) - to generate code using by giving a prompt to the GPT-3-5-turbo model
-6: finishedanswer (  ) - to finish your answer and send it to the user
+6: finishedanswer ( messageSummaryOfWhatHasBeenDoneToSendToUser  ) - to finish your answer and send it to the user
 7: searchStackOverflow ( query ) - to search for answers to your coding questions
 8: runCommand ( command ) - to run a command in the terminal
 """
@@ -78,9 +76,10 @@ const LandingPage = () => {
 
 export default LandingPage;
 ``` )
+
 """
 
-remember = """
+old_reminder = """
 When you want to tell the user something, you need to put your message in betwen *** and ***.
 When you want to output the plan, you need to put it in between $$$ and $$$.
 When you want to output code, you need to put it in between ``` and ```.
@@ -109,12 +108,27 @@ export default function LandingPage() {
   );
 }
 ``` )
-
-
 $$$
+"""
+
+remember = """
+This is an example of an answer using the correct format:
+1 ::: runCommand ( npm run build )
+2 ::: readFile( components/LandingPage.tsx )
+3 ::: writeFile( components/LandingPage.tsx,```import React from "react";
+export default function LandingPage() {
+  return (
+    <div>
+      <span>hello</span>
+    </div>
+  );
+}
+``` )
 
 
 You can only use tools and agents that are available to you. You can't invent new tools or agents.
+
+
 
 Once a step is done and you have the result, you remove the step from the plan and continue with the next step.
 
@@ -124,7 +138,7 @@ testUserPrompt = """Code an app that is tinder for dogs"""
 
 tools_n_agents = p.tools_n_agents_init + tools_list + agents_list
 
-remember_only_use = only_use + tools_list + agents_list
+remember_only_use = only_use + tools_list + agents_list + p.tech_rules
 
 
 def getJuniorDevPromptMessages():

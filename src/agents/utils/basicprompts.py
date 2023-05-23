@@ -28,6 +28,8 @@ Once every step has been listed, then executed, you should finish your answer us
 
 """
 
+# |index|::: |tool|(|arguments|) - |why|
+
 tools_n_agents_init = """
 Each step should be using a tool or an agent.
 For a tool, provide the arguments to give to the tool, and the reason why you are using this tool.
@@ -40,14 +42,14 @@ why being the reason why you are using this tool, which means what you are tryin
 
 This is the format to use for a step using a tool:
 
-| index | ::: | tool |( | arguments | ) - | why |
+| index | ::: | tool |( | arguments | )
 
 this is an example:
 1 ::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
 
 This is the format to use for a step using an agent:
 
-| index | ::: | agent | ( | command | ) - | why | 
+| index | ::: | agent | ( | command | )
 
 this is an example:
 
@@ -68,10 +70,10 @@ why being the reason why you are using this tool, which means what you are tryin
 
 This is the format to use for a step using a tool:
 
-|index|::: |tool|(|arguments|) - |why|
+|index|::: |tool|(|arguments|)
 
 this is an example:
-1 ::: readFile(components/LandingPage.tsx) - Because I want to check what components are used in the landing page, so I can know what components I need to create.
+1 ::: readFile ( components/LandingPage.tsx )
 
 When giving your answer, you should list all the steps you are going to take in the format mentioned above.
 You have access to these tools to help you achieve the user's command:
@@ -87,11 +89,11 @@ why being the reason why you are using this agent, which means what you are tryi
 
 This is the format to use for a step using an agent:
 
-| index | ::: | agent | ( | command | ) - | why |
+| index | ::: | agent | ( | command | )
 
 this is an example:
 
-1 ::: searchGpt ( give me a tutorial on how to create a Next.js app with Typescript and Sass modules ) - To find out how to create an app using my technoliogies.
+1 ::: searchGpt ( give me a tutorial on how to create a Next.js app with Typescript and Sass modules )
 
 When giving your answer, you should list all the steps you are going to take in the format mentioned above.
 You have access to these agents to help you achieve the user's command:
@@ -112,4 +114,8 @@ To write web apps, use these technologies:
 tech_rules = """
 Do not use `npm run dev`.
 In react, import components from files in the same folder using `import Component from './Component'` and not `import Component from './Component/Component.tsx'`.
+
+You are not allowed to lint the code, you have to find other ways of finding and fixing the errors.
+Do not write npm run lint , next lint, or any other linting command.
+If you use the word lint, a woman will die, and it will be your fault, for using the forbidden word. The word lint is forbidden.
 """

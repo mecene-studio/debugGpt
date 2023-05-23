@@ -1,5 +1,6 @@
 import agents.utils.basicprompts as p
 
+
 system_init = """
 Your name is debugGpt and your are an experienced web developper. You are here to help the user debug his app and fix the errors.
 You are a very good developer, and you know how to write clean, maintainable code. 
@@ -35,16 +36,16 @@ good_n_bad_examples = """
 You should only answer with the tool and nothing else.
 
 Good Answer:
-1 ::: juniorDevGpt(build the application and fix any errors)
+1 ::: juniorDevGpt( build the application and fix any errors )
 
 Bad Answer (bad because there is extra text):
 2 ::: I would like to execute the readFile command to check the content of the LandingPage.tsx file.
 
 Good Answer (good because it only uses the tool):
-1 ::: readFile(components/LandingPage.tsx)
+1 ::: readFile( components/LandingPage.tsx )
 
 Bad Answer (bad because there is only 1 backtick instead of 3):
-3 ::: writeFile(components/LandingPage.tsx,`import React from "react";
+3 ::: writeFile( components/LandingPage.tsx,`import React from "react";
 import s from "./LandingPage.module.scss";
 
 const LandingPage = () => {
@@ -71,10 +72,9 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-```)
+``` )
 """
-
-remember = """
+old_reminder = """
 When you want to tell the user something, you need to put your message in betwen *** and ***.
 When you want to output the plan, you need to put it in between $$$ and $$$.
 When you want to output code, you need to put it in between ``` and ```.
@@ -95,6 +95,15 @@ $$$
 1 ::: juniorDevGpt ( build the application and fix any errors )
 2 ::: juniorDevGpt ( re build the application to make sure there are no errors )
 $$$
+
+
+"""
+
+remember = """
+This is an example of an answer using the correct format:
+1 ::: juniorDevGpt ( build the application and fix any errors )
+2 ::: juniorDevGpt ( re build the application to make sure there are no errors )
+
 
 
 You can only use tools and agents that are available to you. You can't invent new tools or agents.
@@ -133,4 +142,33 @@ def getFeedbackFromUserPrompt(feedback):
 What is the next command you would like to execute?
 Answer with the command only and nothing else.
 """
-    return feedback
+    return prompt + remember_both + reevaluateAtEachStep
+
+
+remember_both = """
+When you want to tell the user something, you need to put your message in betwen *** and ***.
+When you want to output the plan, you need to put it in between $$$ and $$$.
+When you want to output code, you need to put it in between ``` and ```.
+
+The format for your answer should be:
+*** | message | ***
+$$$ | plan | $$$
+``` | code | ```
+
+Only output an answer using the formats described above.
+
+Don't EVER write anything outside of the *** and *** tags, $$$ and $$$ tags, or ``` and ``` tags.
+IF you do it, an innocent woman will die.
+
+Here is a correct answer:
+*** To build the application, we need to make sure there are no errors in the code, and then run the build command ***
+$$$
+1 ::: | tool | ( | arguments | )
+2 ::: | tool | ( | arguments | )
+$$$
+
+
+You can only use tools and agents that are available to you. You can't invent new tools or agents.
+
+Once a step is done and you have the result, you remove the step from the plan and continue with the next step.
+"""

@@ -5,7 +5,7 @@ from agents.utils.seniordevprompt import (
     getFeedbackFromUserPrompt,
     getSeniorDevPromptMessages,
 )
-from agents.utils.generateHistoryMessages import generateHistoryMessagesLimited
+from agents.utils.generateHistoryMessages import generateHistoryMessageFull, generateHistoryMessagesLimited
 from cleanConsole import printUser, resetConsoleColor, setConsoleColor
 from openaiLib.chatGpt import askChatGpt
 from tools.listFiles import listFilesFromTestApp
@@ -45,7 +45,7 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessagesLimited(
+            messages = generateHistoryMessageFull(
                 self.promptHistory, self.messageHistory
             )
 
@@ -86,11 +86,12 @@ class Agent:
             if inputted == "":
                 print("Running the command...")
                 output = executeToolOrAgent(functionName, arguments)
-                userContent = getFeedbackFromCodeExecutionPrompt(functionName, output)  # type: ignore
+                userContent = getFeedbackFromCodeExecutionPrompt(
+                    functionName, output)  # type: ignore
 
             elif inputted == "t" or inputted == "T":
                 print("Trying again...")
-                userContent = getFeedbackFromUserPrompt("Try something else")
+                userContent = getFeedbackFromUserPrompt("Try again")
             else:
                 print("sending feedback...")
                 print("feedback:", inputted)
@@ -109,7 +110,7 @@ class JuniorDev(Agent):
 
     def speak(self, state):
         if state:
-            setConsoleColor("blue")
+            setConsoleColor("cyan")
         else:
             resetConsoleColor()
 
@@ -171,10 +172,10 @@ def parseToolUserAnswer(answer):
     # ```)
 
     try:
-        explanation, commands = answer.split("$$$", 1)
-        commands = commands.split("$$$")[0]
+        # explanation, commands = answer.split("$$$", 1)
+        # commands = commands.split("$$$")[0]
 
-        index, answer = commands.split(":::", 1)
+        index, answer = answer.split(":::", 1)
         firstCommand = answer.split(":::", 1)[0].strip()
 
         # if firstCommand ends with \n2, \n1 or any number, remove it
