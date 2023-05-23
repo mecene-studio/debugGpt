@@ -36,6 +36,7 @@ class Agent:
 
         maxIterations = 50
         for i in range(maxIterations):
+            # TODO: switch role to user
             userMessage = {"role": "user", "content": userContent}
 
             # type: ignore
@@ -43,7 +44,8 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessages(self.promptHistory, self.messageHistory)
+            messages = generateHistoryMessages(
+                self.promptHistory, self.messageHistory)
 
             # print("\n\n################## messages: \n")
             # for i, message in enumerate(messages):

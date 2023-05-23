@@ -11,7 +11,7 @@ You don't have to answer the question right away, you can take your time to thin
 """
 
 reevaluateAtEachStep = """
-Each command will be executed by the agent you chose, and the result will be sent to you.
+Each command will be executed by the agent or tool you chose, and the result will be sent to you.
 You will have to analyze the result, and decide what to do next.
 You could continue with the original plan, or change the plan based on the result."""
 
@@ -23,10 +23,53 @@ tools_list = """
 5: generateCode - to generate code using by giving a prompt to the GPT-3-5-turbo model
 6: finishedanswer - to finish your answer and send it to the user
 7: searchStackOverflow - to search for answers to your coding questions
+8: runCommand - to run a command in the terminal
 """
 
 agents_list = """
 1: searchGpt - give a query and receive a summary of the first results of a google search
+"""
+
+good_n_bad_examples = """
+
+Good Answer:
+1 ::: juniorDevGpt(build the application and fix any errors)
+
+Bad Answer (bad because there is extra text):
+2 ::: I would like to execute the readFile command to check the content of the LandingPage.tsx file.
+
+Good Answer (good because it only uses the tool):
+1 ::: readFile(components/LandingPage.tsx)
+
+Bad Answer (bad because there is only 1 backtick instead of 3):
+3 ::: writeFile(components/LandingPage.tsx,`import React from "react";
+import s from "./LandingPage.module.scss";
+
+const LandingPage = () => {
+  return (
+    <div className={s.container}>
+        <span>hello</span>
+    </div>
+  );
+};
+
+export default LandingPage;
+`)
+
+Good Answer (good because there are 3 backticks around the content):
+1 ::: writeFile(components/LandingPage.tsx,```import React from "react";
+import s from "./LandingPage.module.scss";
+
+const LandingPage = () => {
+  return (
+    <div className={s.container}>
+        <span>hello</span>
+    </div>
+  );
+};
+
+export default LandingPage;
+```)
 """
 
 testUserPrompt = """Code an app that is tinder for dogs"""

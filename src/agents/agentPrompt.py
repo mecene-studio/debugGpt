@@ -12,4 +12,4 @@ What is the next command you would like to execute?
 Answer with the command only and nothing else.
 """
 
-    return prompt
+    return output
