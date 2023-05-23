@@ -85,7 +85,7 @@ def runShell(commandRaw: str):
     # command = ["npm", "run", "build"]
     command = commandRaw.split(" ")
     # print("command: ", command)
-    maxExecutionTime = 10  # seconds
+    maxExecutionTime = 30  # seconds
     try:
         process = subprocess.run(
             command, timeout=maxExecutionTime, capture_output=True, text=True

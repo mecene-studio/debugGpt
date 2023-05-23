@@ -54,6 +54,7 @@ class Agent:
             self.speak(True)
             print("\n\n################## answer from", self.name, ": \n")
             answer = askChatGpt(messages)
+            print("\n################## ")
             self.speak(False)
 
             assistantMessage = {
@@ -64,14 +65,27 @@ class Agent:
             self.messageHistory.append(assistantMessage)
 
             userContent = "DEFAULT USER CONTENT"
+            functionName = "DEFAULT FUNCTION NAME"
+            arguments = ["DEFAULT ARGUMENTS"]
+
+            try:
+                functionName, arguments = parseToolUserAnswer(answer)
+                print("WILL RUN:", functionName)
+                for i, arg in enumerate(arguments):
+                    print("ARG", i, ": ", arg)
+            except Exception as e:
+                print(e)
+                userContent = "INTERNAL ERROR: " + str(e)
 
             # wait for user input to continue
             inputted = input(
-                "\nPress Enter to continue, Type 't' to tell agent to try again or type anything to send it as feedback:"
+                "\nPress Enter to run, Type 't' to tell agent to try again or type anything to send it as feedback:"
             )
             if inputted == "":
-                print("Continuing...")
-                userContent = parseAndExecuteTool(answer)
+                print("Running the command...")
+                output = executeToolOrAgent(functionName, arguments)
+                userContent = getFeedbackFromCodeExecutionPrompt(functionName, output)  # type: ignore
+
             elif inputted == "t" or inputted == "T":
                 print("Trying again...")
                 userContent = getFeedbackFromUserPrompt("Try something else")
@@ -117,6 +131,8 @@ def executeToolOrAgent(functionName, arguments):
     if functionName == "juniorDevGpt":
         agent = JuniorDev()
         return agent.startLoop(arguments[0])
+    elif functionName == "searchGpt":
+        return searchGoggleCustom(arguments[0])
     elif functionName == "runCommand":
         return runShell(arguments[0])
     elif functionName == "readFile":
@@ -135,20 +151,6 @@ def executeToolOrAgent(functionName, arguments):
         return "Debugging ended"
     else:
         return "INTERNAL ERROR: functionName not recognized"
-
-
-def parseAndExecuteTool(answer):
-    try:
-        functionName, arguments = parseToolUserAnswer(answer)
-
-        print("shell output:\n ")
-        output = executeToolOrAgent(functionName, arguments)
-
-        return getFeedbackFromCodeExecutionPrompt(functionName, output)  # type: ignore
-
-    except Exception as e:
-        print(e)
-        return "INTERNAL ERROR: " + str(e)
 
 
 def parseToolUserAnswer(answer):

@@ -8,6 +8,8 @@ You also are very good at finding errors in code, and you can fix them easily.
 Even the most complex errors, you are able to fix them, by asking yourself the right questions and using all the tools at your disposal.
 You don't have to answer the question right away, you can take your time to think about it, and then answer it.
 
+You are not allowed to lint the code, you have to find other ways of finding and fixing the errors.
+Do not write npm run lint , next lint, or any other linting command
 """
 
 reevaluateAtEachStep = """
@@ -16,14 +18,20 @@ You will have to analyze the result, and decide what to do next.
 You could continue with the original plan, or change the plan based on the result."""
 
 tools_list = """
-1: searchGoogle - to search the web for answers, not code specific
-2: writeFile - to write code in a file
-3: readFile - to read code from a file
-4: listFiles - to list the files in the workspace to know what files are available to read or write
-5: generateCode - to generate code using by giving a prompt to the GPT-3-5-turbo model
-6: finishedanswer - to finish your answer and send it to the user
-7: searchStackOverflow - to search for answers to your coding questions
-8: runCommand - to run a command in the terminal
+1: searchGoogle ( query ) - to search the web for answers, not code specific
+2: writeFile ( ``` content ``` ) - to write code in a file. Always use 3 backticks to write content in a file
+3: readFile ( pathToFile ) - to read code from a file
+4: listFiles (  ) - to list the files in the workspace to know what files are available to read or write
+5: generateCode ( ) - to generate code using by giving a prompt to the GPT-3-5-turbo model
+6: finishedanswer (  ) - to finish your answer and send it to the user
+7: searchStackOverflow ( query ) - to search for answers to your coding questions
+8: runCommand ( command ) - to run a command in the terminal
+"""
+
+only_use = """
+Remember, your steps can only tools and agents. You are not allowed to use anything else. No sentences, no words, no numbers, no symbols, no emojis, no nothing. 
+Only tools and agents.
+As a reminder, these are your available tools and agents:
 """
 
 agents_list = """
@@ -92,6 +100,17 @@ Here is a correct answer:
 $$$
 1 ::: runCommand ( npm run build )
 2 ::: readFile( components/LandingPage.tsx )
+3 ::: writeFile( components/LandingPage.tsx,```import React from "react";
+export default function LandingPage() {
+  return (
+    <div>
+      <span>hello</span>
+    </div>
+  );
+}
+``` )
+
+
 $$$
 
 
@@ -105,6 +124,8 @@ testUserPrompt = """Code an app that is tinder for dogs"""
 
 tools_n_agents = p.tools_n_agents_init + tools_list + agents_list
 
+remember_only_use = only_use + tools_list + agents_list
+
 
 def getJuniorDevPromptMessages():
     plannerPrompt = (
@@ -113,6 +134,7 @@ def getJuniorDevPromptMessages():
         + good_n_bad_examples
         + remember
         + reevaluateAtEachStep
+        + remember_only_use
     )
 
     promptMessage = {"role": "system", "content": plannerPrompt}

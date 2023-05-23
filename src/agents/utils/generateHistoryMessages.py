@@ -3,7 +3,7 @@ def generateHistoryMessagesComplicated(startingMessages, historyMessages):
     # load the last 5 message pairs from the history
     # get them in historical order
 
-    maxChar = 15_000  # approx 16k tokens is the max for gpt-3.5-turbo
+    maxChar = 14_000  # approx 16k tokens is the max for gpt-3.5-turbo
     currentTokenCount = 0
     insertIndex = 0
 
