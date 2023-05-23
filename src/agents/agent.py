@@ -5,7 +5,7 @@ from agents.utils.seniordevprompt import (
     getFeedbackFromUserPrompt,
     getSeniorDevPromptMessages,
 )
-from agents.utils.generateHistoryMessages import generateHistoryMessages
+from agents.utils.generateHistoryMessages import generateHistoryMessagesLimited
 from cleanConsole import printUser, resetConsoleColor, setConsoleColor
 from openaiLib.chatGpt import askChatGpt
 from tools.listFiles import listFilesFromTestApp
@@ -45,7 +45,9 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessages(self.promptHistory, self.messageHistory)
+            messages = generateHistoryMessagesLimited(
+                self.promptHistory, self.messageHistory
+            )
 
             # print("\n\n################## messages: \n")
             # for i, message in enumerate(messages):
