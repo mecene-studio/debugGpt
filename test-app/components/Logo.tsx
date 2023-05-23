@@ -1,5 +1,6 @@
 import React from "react";
 import s from "./Logo.module.scss";
+import { BrainCircuit } from "lucide-react";
 
 const Logo: React.FC = () => {
   return (

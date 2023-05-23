@@ -1,4 +1,5 @@
 import agents.utils.basicprompts as p
+from tools.listFiles import listFilesFromTestApp
 
 system_init = """
 Your name is juniordevGpt, you are a junior full-stack developper powered by chatGpt. 
@@ -158,6 +159,15 @@ def getJuniorDevPromptMessages():
 
 def getSeniorDevGptTestPromptRaw():
     return testUserPrompt
+
+
+def getJuniorDevFileMessage():
+    message = {
+        "role": "system",
+        "content": "These are the files in the project:\n" + listFilesFromTestApp(),
+    }
+
+    return message
 
 
 def getFeedbackFromAgentPromptMessage(stepIndex, agentName, agentCommand, agentAnswer):

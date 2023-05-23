@@ -1,7 +1,13 @@
 import React from "react";
+import AppLayout from "../AppLayout";
+import Button from "../Button";
 export default function LandingPage() {
   return (
-    <div>
-      <span>hello</span>
+    <AppLayout>
+      <div className={s.container}>
+        <Logo />
+        <Button />
+      </div>
+    </AppLayout>
   );
 }

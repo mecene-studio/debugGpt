@@ -6,7 +6,7 @@ import os
 model = "gpt-3.5-turbo"  # gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301
 
 
-def askChatGpt(promptMessages):
+def askChatGpt(promptMessages, max_tokens=1024):
     load_dotenv()
 
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or "MISSING API KEY"
@@ -16,6 +16,7 @@ def askChatGpt(promptMessages):
         model="gpt-3.5-turbo",
         messages=promptMessages,
         temperature=0,
+        max_tokens=max_tokens,
         stream=True,  # this time, we set stream=True
     )
 

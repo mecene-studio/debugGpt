@@ -47,7 +47,7 @@ def generateHistoryMessagesLimited(startingMessages, historyMessages):
 def generateHistoryMessagesTikToken(startingMessages, historyMessages):
     # enc = tiktoken.get_encoding("cl100k_base")
     enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    maxTokens = 4_096
+    maxTokens = 4096 - 1024 - 200
     currentTokenCount = 0
     insertIndex = 0
 

@@ -11,7 +11,7 @@ def searchStackOverflow(query):
     links = getLinksFromGoogle(newQuery)
 
     if len(links) == 0:
-        return "No results found"
+        return "STACKOVERFLOW: No results found, try a different query."
 
     # print("links", links)
     link = links[0]

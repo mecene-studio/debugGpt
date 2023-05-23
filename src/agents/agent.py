@@ -1,6 +1,9 @@
 import re
 from agents.agentPrompt import getFeedbackFromCodeExecutionPrompt
-from agents.utils.juniordevprompt import getJuniorDevPromptMessages
+from agents.utils.juniordevprompt import (
+    getJuniorDevFileMessage,
+    getJuniorDevPromptMessages,
+)
 from agents.utils.seniordevprompt import (
     getFeedbackFromUserPrompt,
     getSeniorDevPromptMessages,
@@ -33,6 +36,15 @@ class Agent:
     def speak(self, state):
         raise NotImplementedError
 
+    def ask(self, messages):
+        self.speak(True)
+        print("\n\n################## answer from", self.name, ": \n")
+        answer = askChatGpt(messages)
+        print("\n################## ")
+        self.speak(False)
+
+        return answer
+
     def startLoop(self, prompt: str):
         # answer = "runCommand(npm run build)"  # hardcode the first command
         # print("initial prompt:\n", prompt)
@@ -57,11 +69,7 @@ class Agent:
             # for i, message in enumerate(messages):
             #     print(message.get("role"), ":", message.get("content"))
 
-            self.speak(True)
-            print("\n\n################## answer from", self.name, ": \n")
-            answer = askChatGpt(messages)
-            print("\n################## ")
-            self.speak(False)
+            answer = self.ask(messages)
 
             assistantMessage = {
                 "role": "assistant",
@@ -121,6 +129,12 @@ class JuniorDev(Agent):
             setConsoleColor("cyan")
         else:
             resetConsoleColor()
+
+    def ask(self, messages):
+        fileSystemMessage = getJuniorDevFileMessage()
+        # insert it one before the last message
+        messages.insert(-1, fileSystemMessage)
+        return super().ask(messages)
 
 
 class SeniorDev(Agent):

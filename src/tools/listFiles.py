@@ -44,7 +44,7 @@ def listFilesFromPathTabs(path):
 def listFilesFromPath(path):
     treeString = ""
 
-    print("path", path)
+    # print("path", path)
     # walk the directory recursively, adding a tab for each level but ignore what's in the ignoreList
     for root, dirs, files in os.walk(path):
         # remove the first directory from the path
