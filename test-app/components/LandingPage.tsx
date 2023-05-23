@@ -1,12 +1,8 @@
 import React from "react";
-import s from "./LandingPage.module.scss";
-
-const LandingPage = () => {
+export default function LandingPage() {
   return (
-    <div className={s.container}>
-        <span>hello</span>
+    <div>
+      <span>hello</span>
     </div>
   );
-};
-
-export default LandingPage;
+}

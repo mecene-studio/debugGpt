@@ -1,7 +1,8 @@
 from agents.agent import parseToolUserAnswer
 from agents.utils.generateHistoryMessages import (
-    generateHistoryMessageFull,
+    generateHistoryMessagesTikToken,
 )
+from agents.utils.juniordevprompt import getJuniorDevPromptMessages
 
 
 def testHistory():
@@ -9,34 +10,29 @@ def testHistory():
     historyMessages = [
         {
             "role": "user",
-            "content": "user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0user0",
+            "content": "use0",
         },
         {
-            "role": "system",
-            "content": "system1system1system1system1system1system1system1system1system1system1system1system1system1system1system1system1",
-        },
-        {
-            "role": "user",
-            "content": "user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2user2",
-        },
-        {
-            "role": "system",
-            "content": "system3system3system3system3system3system3system3system3system3system3system3system3system3system3system3system3",
+            "role": "assistant",
+            "content": "assistant1",
         },
         {
             "role": "user",
-            "content": "user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4user4",
+            "content": "user2",
         },
         {
-            "role": "system",
-            "content": "system5system5system5system5system5system5system5system5system5system5system5system5system5system5system5system5",
+            "role": "assistant",
+            "content": "assistant3",
+        },
+        {
+            "role": "user",
+            "content": "user4",
         },
     ]
-    messages = generateHistoryMessagesComplicated(
-        startingMessages, historyMessages)
+    messages = generateHistoryMessagesTikToken(startingMessages, historyMessages)
     print("\n\nmessages:", messages, "\n\n")
     for message in messages:
-        print(message.get("role"), ":\n", message.get("content"))
+        print(message.get("role"), ":\n", message.get("content")[0:100])
 
 
 def testParseTools():
@@ -56,4 +52,4 @@ def testParseTools():
 
 
 if __name__ == "__main__":
-    testParseTools()
+    testHistory()

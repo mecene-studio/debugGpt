@@ -5,7 +5,11 @@ from agents.utils.seniordevprompt import (
     getFeedbackFromUserPrompt,
     getSeniorDevPromptMessages,
 )
-from agents.utils.generateHistoryMessages import generateHistoryMessageFull, generateHistoryMessagesLimited
+from agents.utils.generateHistoryMessages import (
+    generateHistoryMessageFull,
+    generateHistoryMessagesLimited,
+    generateHistoryMessagesTikToken,
+)
 from cleanConsole import printUser, resetConsoleColor, setConsoleColor
 from openaiLib.chatGpt import askChatGpt
 from tools.listFiles import listFilesFromTestApp
@@ -45,7 +49,7 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
-            messages = generateHistoryMessageFull(
+            messages = generateHistoryMessagesTikToken(
                 self.promptHistory, self.messageHistory
             )
 
@@ -72,6 +76,9 @@ class Agent:
 
             try:
                 functionName, arguments = parseToolUserAnswer(answer)
+
+                if functionName == "finishedanswer":
+                    return f"AGENT FINISHED with message: + \n {arguments[0]}"
                 print("WILL RUN:", functionName)
                 for i, arg in enumerate(arguments):
                     print("ARG", i, ": ", arg)
@@ -87,7 +94,8 @@ class Agent:
                 print("Running the command...")
                 output = executeToolOrAgent(functionName, arguments)
                 userContent = getFeedbackFromCodeExecutionPrompt(
-                    functionName, output)  # type: ignore
+                    functionName, output  # type: ignore
+                )
 
             elif inputted == "t" or inputted == "T":
                 print("Trying again...")
