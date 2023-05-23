@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  debuggpt:
+    image: debuggpt
+    build:
+      context: .
+      dockerfile: ./Dockerfile
