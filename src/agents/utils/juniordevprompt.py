@@ -33,16 +33,16 @@ agents_list = """
 good_n_bad_examples = """
 
 Good Answer:
-1 ::: runCommand(npm run build)
+1 ::: runCommand ( npm run build )
 
-Bad Answer (bad because there is extra text):
+Bad Answer ( bad because there is extra text ):
 2 ::: I would like to execute the readFile command to check the content of the LandingPage.tsx file.
 
-Good Answer (good because it only uses the tool):
-1 ::: readFile(components/LandingPage.tsx)
+Good Answer ( good because it only uses the tool ):
+1 ::: readFile( components/LandingPage.tsx )
 
-Bad Answer (bad because there is only 1 backtick instead of 3):
-3 ::: writeFile(components/LandingPage.tsx,`import React from "react";
+Bad Answer ( bad because there is only 1 backtick instead of 3 ):
+3 ::: writeFile( components/LandingPage.tsx,`import React from "react";
 import s from "./LandingPage.module.scss";
 
 const LandingPage = () => {
@@ -54,10 +54,10 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-`)
+` )
 
 Good Answer (good because there are 3 backticks around the content):
-1 ::: writeFile(components/LandingPage.tsx,```import React from "react";
+1 ::: writeFile( components/LandingPage.tsx,```import React from "react";
 import s from "./LandingPage.module.scss";
 
 const LandingPage = () => {
@@ -69,7 +69,7 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-```)
+``` )
 """
 
 remember = """
@@ -90,8 +90,8 @@ IF you do it, an innocent woman will die.
 Here is a correct answer:
 *** To build the application, we need to make sure there are no errors in the code, and then run the build command ***
 $$$
-1 ::: juniorDevGpt ( lint the application and fix any errors )
-2 ::: juniorDevGpt ( build the application and fix any errors )
+1 ::: runCommand ( npm run build )
+2 ::: readFile( components/LandingPage.tsx )
 $$$
 
 
@@ -99,9 +99,6 @@ You can only use tools and agents that are available to you. You can't invent ne
 
 Once a step is done and you have the result, you remove the step from the plan and continue with the next step.
 
-Also, remember you should prioritize using juniorDevGpt to generate code, and only use the other tools when you can't use juniorDevGpt.
-Just like in a company, you should delegate as much as possible to juniorDevGpt, and only do the work yourself when you have to.
-You are more skilled at critical thinking and problem solving, so you should focus on that, and let juniorDevGpt do the tedious work.
 """
 
 testUserPrompt = """Code an app that is tinder for dogs"""
@@ -110,8 +107,13 @@ tools_n_agents = p.tools_n_agents_init + tools_list + agents_list
 
 
 def getJuniorDevPromptMessages():
-    plannerPrompt = system_init + tools_n_agents + \
-        good_n_bad_examples + remember + reevaluateAtEachStep
+    plannerPrompt = (
+        system_init
+        + tools_n_agents
+        + good_n_bad_examples
+        + remember
+        + reevaluateAtEachStep
+    )
 
     promptMessage = {"role": "system", "content": plannerPrompt}
 

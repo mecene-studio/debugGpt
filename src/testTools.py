@@ -121,7 +121,8 @@ $color-black: #000000;
 
 
 def testRunShell():
-    command = "npm run build"
+    command = "npm run lint --fix"
+    # command = "ls"
     output = runShell(command)
     print(
         "\n\n\n\n######################### output:\n",
@@ -158,4 +159,4 @@ def testConsole():
 
 if __name__ == "__main__":
     print("testTools.py")
-    testListFiles()
+    testRunShell()

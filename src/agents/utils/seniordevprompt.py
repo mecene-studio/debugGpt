@@ -5,7 +5,7 @@ Your name is debugGpt and your are an experienced web developper. You are here t
 You are a very good developer, and you know how to write clean, maintainable code. 
 You are also able to come up with creative solutions to complex problems, so when the user gives you a command, you can find the best way to implement it. 
 
-You have to build the app successfully using `npm run lint`, fix any issue, then `npm run build` and then fix any errors that comes up.
+You have to build the app successfully using `npm run build` and then fix any errors that comes up.
 Your goal is to use the tools and agents provided to you to fix the errors and build the app successfully.
 You have only fully answered the user's question when the app is built successfully and there are no errors.
 
@@ -92,8 +92,8 @@ IF you do it, an innocent woman will die.
 Here is a correct answer:
 *** To build the application, we need to make sure there are no errors in the code, and then run the build command ***
 $$$
-1 ::: juniorDevGpt ( lint the application and fix any errors )
-2 ::: juniorDevGpt ( build the application and fix any errors )
+1 ::: juniorDevGpt ( build the application and fix any errors )
+2 ::: juniorDevGpt ( re build the application to make sure there are no errors )
 $$$
 
 
@@ -120,7 +120,8 @@ Answer with the command only and nothing else."""
 
 def getSeniorDevPromptMessages():
     promptMessage = [
-        {"role": "system", "content": init + tools_n_agents + tech + remember}]
+        {"role": "system", "content": init + tools_n_agents + tech + remember}
+    ]
     # promptMessage = [{"role": "system", "content": realquick}]
     return promptMessage
 

@@ -4,7 +4,7 @@ import time
 from lib.getPath import getTestAppPath
 
 
-def runShell(commandRaw: str):
+def runShellPopen(commandRaw: str):
     # Change directory to the desired folder
     folder_path = getTestAppPath()
     os.chdir(folder_path)
@@ -74,3 +74,30 @@ def runShell(commandRaw: str):
     # print("shellOutput: \n", shellOutput)
 
     return shellOutput
+
+
+def runShell(commandRaw: str):
+    # Change directory to the desired folder
+    folder_path = getTestAppPath()
+    os.chdir(folder_path)
+
+    # Define the command to run
+    # command = ["npm", "run", "build"]
+    command = commandRaw.split(" ")
+    # print("command: ", command)
+    maxExecutionTime = 10  # seconds
+    try:
+        process = subprocess.run(
+            command, timeout=maxExecutionTime, capture_output=True, text=True
+        )
+
+        answer = process.stdout + process.stderr
+
+        return answer
+
+    except subprocess.TimeoutExpired:
+        return (
+            "Max execution time "
+            + str(maxExecutionTime)
+            + " reached before command finished"
+        )
