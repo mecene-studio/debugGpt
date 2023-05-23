@@ -158,4 +158,4 @@ def testConsole():
 
 if __name__ == "__main__":
     print("testTools.py")
-    testConsole()
+    testListFiles()
