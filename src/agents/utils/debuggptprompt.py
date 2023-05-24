@@ -111,6 +111,18 @@ What is the next command you want to execute?\nRespond using the same template a
     return promptMessage
 
 
+def getFeedbackFromUserPrompt(feedback):
+    prompt = f"""The user stopped you from running the command and gave you this feedback:
+{feedback}
+
+What is the next command you want to execute?
+You can only answer with 1 tool and its arguments.
+Respond using the same template as before:
+toolName ( toolArguments ) 
+"""
+    return prompt
+
+
 def getFeedbackFromCodeExecutionPrompt(command, output: str):
     # max length of output is 1000 characters
     output = output[-1000:]

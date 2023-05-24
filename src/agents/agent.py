@@ -3,13 +3,13 @@ from agents.utils.debuggptprompt import (
     getDebugGptFileMessage,
     getDebugGptPromptMessages,
     getFeedbackFromCodeExecutionPrompt,
+    getFeedbackFromUserPrompt,
 )
 from agents.utils.juniordevprompt import (
     getJuniorDevFileMessage,
     getJuniorDevPromptMessages,
 )
 from agents.utils.seniordevprompt import (
-    getFeedbackFromUserPrompt,
     getSeniorDevPromptMessages,
 )
 from agents.utils.generateHistoryMessages import (
