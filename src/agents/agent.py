@@ -1,5 +1,5 @@
 import re
-from agents.agentPrompt import getFeedbackFromCodeExecutionPrompt
+from agents.agentPrompt import getFeedbackFromCodeExecutionPrompt, getPlanMessage
 from agents.utils.juniordevprompt import (
     getJuniorDevFileMessage,
     getJuniorDevPromptMessages,
@@ -36,20 +36,12 @@ class Agent:
     def speak(self, state):
         raise NotImplementedError
 
-    def ask(self, messages):
-        self.speak(True)
-        print("\n\n################## answer from", self.name, ": \n")
-        answer = askChatGpt(messages)
-        print("\n################## ")
-        self.speak(False)
-
-        return answer
-
     def startLoop(self, prompt: str):
         # answer = "runCommand(npm run build)"  # hardcode the first command
         # print("initial prompt:\n", prompt)
 
         userContent = prompt
+        plan = ""
 
         maxIterations = 50
         for i in range(maxIterations):
@@ -61,15 +53,35 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
+            systemMessages = []
+
+            fileSystemMessage = getJuniorDevFileMessage()
+
+            systemMessages.append(fileSystemMessage)
+
+            planMessage = getPlanMessage(plan)
+            if planMessage:
+                systemMessages.append(planMessage)
+
             messages = generateHistoryMessagesTikToken(
-                self.promptHistory, self.messageHistory
+                self.promptHistory, self.messageHistory, systemMessages
             )
 
-            # print("\n\n################## messages: \n")
-            # for i, message in enumerate(messages):
-            #     print(message.get("role"), ":", message.get("content"))
+            setConsoleColor("yellow")
+            print("\n\n################## messages: \n")
+            for i, message in enumerate(messages):
+                print(message.get("role"), ":   \n\n")
+                lines = message.get("content").split("\n")
+                for line in lines:
+                    print("\t", line)
+                print("\n")
+            resetConsoleColor()
 
-            answer = self.ask(messages)
+            self.speak(True)
+            print("\n\n################## answer from", self.name, ": \n")
+            answer = askChatGpt(messages)
+            print("\n################## ")
+            self.speak(False)
 
             assistantMessage = {
                 "role": "assistant",
@@ -83,7 +95,7 @@ class Agent:
             arguments = ["DEFAULT ARGUMENTS"]
 
             try:
-                functionName, arguments = parseToolUserAnswer(answer)
+                functionName, arguments, plan = parseToolUserAnswer(answer)
 
                 if functionName == "finishedanswer":
                     return f"AGENT FINISHED with message: + \n {arguments[0]}"
@@ -129,12 +141,6 @@ class JuniorDev(Agent):
             setConsoleColor("cyan")
         else:
             resetConsoleColor()
-
-    def ask(self, messages):
-        fileSystemMessage = getJuniorDevFileMessage()
-        # insert it one before the last message
-        messages.insert(-1, fileSystemMessage)
-        return super().ask(messages)
 
 
 class SeniorDev(Agent):
@@ -197,6 +203,8 @@ def parseToolUserAnswer(answer):
         # explanation, commands = answer.split("$$$", 1)
         # commands = commands.split("$$$")[0]
 
+        plan = answer
+
         index, answer = answer.split(":::", 1)
         firstCommand = answer.split(":::", 1)[0].strip()
 
@@ -217,7 +225,7 @@ def parseToolUserAnswer(answer):
         for i in range(len(argumentsList)):
             argumentsList[i] = argumentsList[i].strip()
 
-        return functionName, argumentsList
+        return functionName, argumentsList, plan
     except:
         raise Exception("Invalid answer format")
 

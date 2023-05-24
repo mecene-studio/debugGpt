@@ -1,3 +1,4 @@
+import json
 import tiktoken
 
 
@@ -44,15 +45,16 @@ def generateHistoryMessagesLimited(startingMessages, historyMessages):
     return messages
 
 
-def generateHistoryMessagesTikToken(startingMessages, historyMessages):
+def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMessages):
     # enc = tiktoken.get_encoding("cl100k_base")
     enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    maxTokens = 4096 - 1024 - 200
+    maxTokens = 4096 - 1024
     currentTokenCount = 0
     insertIndex = 0
 
     messages = []
 
+    # add starting messages
     for i in range(len(startingMessages)):
         currentTokenCount += len(enc.encode(startingMessages[i]["content"]))
         if currentTokenCount > maxTokens:
@@ -60,23 +62,34 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages):
         messages.append(startingMessages[i])
         insertIndex += 1
 
-    # print("starting messages token count:", currentTokenCount)
+    # add system messages
+    for i in range(len(systemMessages)):
+        message = systemMessages[i]
+        messageTokens = len(enc.encode(message["content"]))
+        if currentTokenCount + messageTokens > maxTokens:
+            break
+        currentTokenCount += messageTokens
+        messages.append(message)
 
-    addedMessages = 0
+    # append last user message
+    message = historyMessages[-1]
+    messageTokens = len(enc.encode(message["content"]))
+    if currentTokenCount + messageTokens > maxTokens:
+        raise Exception(
+            json.dumps(messages)
+            + "INTERNAL ERROR: no messages were added to the history, new messages are too long"
+        )
+    currentTokenCount += messageTokens
+    messages.append(message)
 
-    for i in range(len(historyMessages) - 1, -1, -1):
+    # add history messages in reverse order until we reach the token limit
+    for i in range(len(historyMessages) - 2, -1, -1):
         message = historyMessages[i]
         messageTokens = len(enc.encode(message["content"]))
         if currentTokenCount + messageTokens > maxTokens:
             break
         currentTokenCount += messageTokens
         messages.insert(insertIndex, message)
-        addedMessages += 1
-
-    if addedMessages == 0:
-        raise Exception(
-            "INTERNAL ERROR: no messages were added to the history, new messages are too long"
-        )
 
     print("total token count:", currentTokenCount)
 

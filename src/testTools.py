@@ -113,7 +113,7 @@ $color-black: #000000;
   pointer-events: none;
 }
 ``` )"""
-    functionName, arguments = parseToolUserAnswer(message)
+    functionName, arguments, plan = parseToolUserAnswer(message)
     print("functionName\n", functionName)
     # print("arguments\n", arguments)
     for argument in arguments:

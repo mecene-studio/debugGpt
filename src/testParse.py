@@ -6,11 +6,17 @@ from agents.utils.juniordevprompt import getJuniorDevPromptMessages
 
 
 def testHistory():
-    startingMessages = [{"role": "system", "content": "your are a gpt"}]
+    startingMessages = [
+        {"role": "system", "content": "your are a gpt"},
+        {
+            "role": "system",
+            "content": "be helpful",
+        },
+    ]
     historyMessages = [
         {
             "role": "user",
-            "content": "use0",
+            "content": "user0",
         },
         {
             "role": "assistant",
@@ -29,22 +35,60 @@ def testHistory():
             "content": "user4",
         },
     ]
-    messages = generateHistoryMessagesTikToken(startingMessages, historyMessages)
+
+    systemMessages = [
+        {
+            "role": "system",
+            "content": "system0",
+        },
+        {
+            "role": "system",
+            "content": "system1",
+        },
+    ]
+
+    messages = generateHistoryMessagesTikToken(
+        startingMessages, historyMessages, systemMessages
+    )
     print("\n\nmessages:", messages, "\n\n")
     for message in messages:
-        print(message.get("role"), ":\n", message.get("content")[0:100])
+        print(message.get("role"), ":", message.get("content")[0:100])
 
 
 def testParseTools():
     answer = """
+    Yes, i can do that
     
-    1 ::: listFiles() - To see what files are available to build the application.
-2 ::: juniorDevGpt(build the application) - To build the application and fix any errors.
-3 ::: juniorDevGpt(re-build the application) - To make sure there are no errors.
-    
-    """
+    1 ::: runCommand (npm run build)
 
-    functionName, arguments = parseToolUserAnswer(answer)
+2 ::: listFiles()
+
+3 ::: readFile(app/page.tsx)
+
+4 ::: readFile(components/LandingPage/LandingPage.tsx)
+
+5 ::: readFile(components/LandingPage/LandingPage.module.scss)
+
+6 ::: readFile(components/LandingPage/test.tsx)
+
+7 ::: readFile(components/AppLayout.tsx)
+
+8 ::: readFile(components/Button.tsx)
+
+9 ::: readFile(components/Footer.tsx)
+
+10 ::: readFile(components/Header.tsx)
+
+11 ::: readFile(components/Logo.tsx)
+
+12 ::: runCommand(npm run lint) [Note: This command is not allowed, so I will skip it]
+
+13 ::: finishedanswer (I have built the application and checked all the files for errors.)
+
+If you want me to do something else, just ask me.
+"""
+
+    functionName, arguments, plan = parseToolUserAnswer(answer)
     print("functionName:", functionName)
     # print("arguments:", arguments)
     for i, arg in enumerate(arguments):
