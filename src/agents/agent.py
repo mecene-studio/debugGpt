@@ -1,5 +1,9 @@
 import re
-from agents.agentPrompt import getFeedbackFromCodeExecutionPrompt, getPlanMessage
+from agents.utils.debuggptprompt import (
+    getDebugGptFileMessage,
+    getDebugGptPromptMessages,
+    getFeedbackFromCodeExecutionPrompt,
+)
 from agents.utils.juniordevprompt import (
     getJuniorDevFileMessage,
     getJuniorDevPromptMessages,
@@ -39,6 +43,9 @@ class Agent:
     def addSystemMessage(self, systemMessages):
         return systemMessages
 
+    def addPlan(self, systemMessages, plan):
+        return NotImplementedError
+
     def startLoop(self, prompt: str):
         # answer = "runCommand(npm run build)"  # hardcode the first command
         # print("initial prompt:\n", prompt)
@@ -58,9 +65,7 @@ class Agent:
 
             systemMessages = self.addSystemMessage([])
 
-            planMessage = getPlanMessage(plan)
-            if planMessage:
-                systemMessages.append(planMessage)
+            systemMessages = self.addPlan(systemMessages, plan)
 
             messages = generateHistoryMessagesTikToken(
                 self.promptHistory, self.messageHistory, systemMessages
@@ -149,6 +154,31 @@ class JuniorDev(Agent):
             resetConsoleColor()
 
 
+class DebugGpt(Agent):
+    def __init__(self):
+        super().__init__()
+        self.name = "JuniorDev"
+
+    def getPromptMessages(self):
+        return getDebugGptPromptMessages()
+
+    def addSystemMessage(self, systemMessages):
+        fileSystemMessage = getDebugGptFileMessage()
+
+        systemMessages.append(fileSystemMessage)
+
+        return systemMessages
+
+    def speak(self, state):
+        if state:
+            setConsoleColor("cyan")
+        else:
+            resetConsoleColor()
+
+    def addPlan(self, systemMessages, plan):
+        return systemMessages
+
+
 class SeniorDev(Agent):
     def __init__(self):
         super().__init__()
@@ -170,7 +200,7 @@ def executeToolOrAgent(functionName, arguments):
         return agent.startLoop(arguments[0])
     elif functionName == "searchGpt":
         return searchGoggleCustom(arguments[0])
-    elif functionName == "runCommand":
+    elif functionName == "runShell":
         return runShell(arguments[0])
     elif functionName == "readFile":
         return readFileFromTestApp(arguments[0])
@@ -210,13 +240,14 @@ def parseToolUserAnswer(answer):
         # commands = commands.split("$$$")[0]
 
         plan = answer
+        firstCommand = answer
 
-        index, answer = answer.split(":::", 1)
-        firstCommand = answer.split(":::", 1)[0].strip()
+        # index, answer = answer.split(":::", 1)
+        # firstCommand = answer.split(":::", 1)[0].strip()
 
-        # if firstCommand ends with \n2, \n1 or any number, remove it
-        if firstCommand[-1].isdigit():
-            firstCommand = firstCommand.rsplit("\n", 1)[0]
+        # # if firstCommand ends with \n2, \n1 or any number, remove it
+        # if firstCommand[-1].isdigit():
+        #     firstCommand = firstCommand.rsplit("\n", 1)[0]
 
         functionName, arguments = firstCommand.split("(", 1)
         arguments_reversed = arguments[::-1]

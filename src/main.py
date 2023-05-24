@@ -1,6 +1,6 @@
-from agents.agent import SeniorDev
+from agents.agent import DebugGpt
 
 
 if __name__ == "__main__":
-    agent = SeniorDev()
+    agent = DebugGpt()
     agent.startLoop("build the application")
