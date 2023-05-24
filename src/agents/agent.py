@@ -36,6 +36,9 @@ class Agent:
     def speak(self, state):
         raise NotImplementedError
 
+    def addSystemMessage(self, systemMessages):
+        return systemMessages
+
     def startLoop(self, prompt: str):
         # answer = "runCommand(npm run build)"  # hardcode the first command
         # print("initial prompt:\n", prompt)
@@ -53,11 +56,7 @@ class Agent:
 
             self.messageHistory.append(userMessage)
 
-            systemMessages = []
-
-            fileSystemMessage = getJuniorDevFileMessage()
-
-            systemMessages.append(fileSystemMessage)
+            systemMessages = self.addSystemMessage([])
 
             planMessage = getPlanMessage(plan)
             if planMessage:
@@ -135,6 +134,13 @@ class JuniorDev(Agent):
 
     def getPromptMessages(self):
         return getJuniorDevPromptMessages()
+
+    def addSystemMessage(self, systemMessages):
+        fileSystemMessage = getJuniorDevFileMessage()
+
+        systemMessages.append(fileSystemMessage)
+
+        return systemMessages
 
     def speak(self, state):
         if state:
