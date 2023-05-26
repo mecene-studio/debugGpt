@@ -77,8 +77,16 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMes
     message = historyMessages[-1]
     messageTokens = len(enc.encode(message["content"]))
     if currentTokenCount + messageTokens > MAX_QUERY_TOKENS:
+        print("current token count:", currentTokenCount)
+        print("message tokens:", messageTokens)
+        print("total would be:", currentTokenCount + messageTokens)
+        print("max query tokens:", MAX_QUERY_TOKENS)
+
         raise Exception(
             json.dumps(messages)
+            + "\n\n"
+            + json.dumps(message)
+            + "\n\n"
             + "INTERNAL ERROR: no messages were added to the history, new messages are too long"
         )
     currentTokenCount += messageTokens

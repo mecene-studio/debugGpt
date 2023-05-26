@@ -237,7 +237,7 @@ def executeToolOrAgent(functionName, arguments):
     elif functionName == "endDebugging":
         return "Debugging ended"
     else:
-        return "INTERNAL ERROR: functionName not recognized"
+        return "INTERNAL ERROR: command" + functionName + "not found"
 
 
 def parseToolUserAnswer(answer):
@@ -256,7 +256,7 @@ def parseToolUserAnswer(answer):
     # ```)
 
     try:
-        explanation, commands = answer.split("$", 1)
+        explanation, commands = answer.split("¬", 1)
         # commands = commands.split("$$$")[0]
 
         plan = explanation

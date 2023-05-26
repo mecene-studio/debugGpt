@@ -9,9 +9,10 @@ def readFile(filename: str):
 
 
 def readFileFromTestApp(filename: str):
+    filename = filename.replace('"', "").replace("'", "")
     extension = filename.split(".")[-1]
-
-    if extension == "tsx":
+    print("extension", extension)
+    if extension == "tsx" or extension == "scss":
         return readCodeFile(filename)
 
     try:

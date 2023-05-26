@@ -6,6 +6,10 @@ from lib.getPath import getTestAppPath
 
 
 def runShellPopen(commandRaw: str):
+    # if commandRaw starts and ends with a quote, remove them
+    if commandRaw.startswith('"') and commandRaw.endswith('"'):
+        commandRaw = commandRaw[1:-1]
+
     # Change directory to the desired folder
     folder_path = getTestAppPath()
     os.chdir(folder_path)
@@ -110,9 +114,9 @@ BASEFILE = "app/page.tsx"
 def getErrorsFromFile(filename, allFiles=False):
     # print("running sccss types")
 
-    command = f'npx typed-scss-modules "{filename}"'
+    command = f"npx typed-scss-modules {filename} --logLevel error"
     if allFiles:
-        command = "npx typed-scss-modules **/*.scss --ignore node_modules/**/*.scss"
+        command = "npx typed-scss-modules **/*.scss --ignore node_modules/**/*.scss --logLevel error"
 
     # print("command: ", command)
     answerTypes = runShell(command)

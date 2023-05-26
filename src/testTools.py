@@ -171,7 +171,7 @@ def testGetErrorsFromFile():
 
 
 def testReadFileFromTestApp():
-    filename = "components/LandingPage/LandingPage.tsx"
+    filename = "app/page.module.scss"
     content = readFileFromTestApp(filename)
     print("content\n", content)
 
@@ -201,6 +201,6 @@ def testGenerateTypes():
 if __name__ == "__main__":
     print("testTools.py")
     # testGenerateTypes()
-    testGetErrorsFromFile()
+    testReadFileFromTestApp()
 
     # testParseTypeAnswer()

@@ -26,6 +26,7 @@ def writeFileToComponents(filename: str, content: str):
 
 
 def writeFileToTestApp(filename: str, content: str):
+    filename = filename.replace('"', "").replace("'", "")
     path = getPathFromTestApp(filename)
 
     # recursively create directories if they don't exist
