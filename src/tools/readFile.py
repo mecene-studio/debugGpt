@@ -10,13 +10,15 @@ def readFile(filename: str):
 
 def readFileFromTestApp(filename: str):
     extension = filename.split(".")[-1]
-    print("extension", extension)
 
     if extension == "tsx":
         return readCodeFile(filename)
 
-    path = getPathFromTestApp(filename)
-    return readFileFullPath(path, filename)
+    try:
+        path = getPathFromTestApp(filename)
+        return readFileFullPath(path)
+    except FileNotFoundError:
+        return "ERROR: File not found: " + filename
 
 
 def readCodeFile(filename: str):
@@ -24,7 +26,11 @@ def readCodeFile(filename: str):
     # print("extension", extension)
     path = getPathFromTestApp(filename)
 
-    content = readFileFullPath(path, filename)
+    try:
+        content = readFileFullPath(path)
+        print("content temp:", content)
+    except FileNotFoundError:
+        return "ERROR: File not found: " + filename
 
     # add linenumber) to each line
     lines = content.split("\n")
@@ -53,15 +59,8 @@ ERRORS:
     return output
 
 
-def readFileFullPath(pathToFile: str, originalFilename=None):
-    try:
-        with open(pathToFile, "r") as f:
-            content = f.read()
+def readFileFullPath(pathToFile: str):
+    with open(pathToFile, "r") as f:
+        content = f.read()
 
-        return content
-
-    except FileNotFoundError:
-        # print("File not found: ", pathToFile)
-        if originalFilename:
-            return "File not found: " + originalFilename
-        return "File not found: " + pathToFile
+    return content

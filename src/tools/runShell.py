@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import time
 from lib.getPath import getTestAppPath
@@ -107,11 +108,21 @@ BASEFILE = "app/page.tsx"
 
 
 def getErrorsFromFile(filename, allFiles=False):
-    createScssTypesCommand = "npx typed-scss-modules **/*.scss"
-    answerTypes = runShell(createScssTypesCommand)
+    # print("running sccss types")
+
+    command = f'npx typed-scss-modules "{filename}"'
+    if allFiles:
+        command = "npx typed-scss-modules **/*.scss --ignore node_modules/**/*.scss"
+
+    # print("command: ", command)
+    answerTypes = runShell(command)
+    # print("answerTypes: ", answerTypes)
+    scssErrors = parseTypeAnswer(answerTypes)
+
+    # print("answerTypes: ", answerTypes)
 
     # compileTscCommand = f"npx tsc {filename} --jsx react --noEmit --esModuleInterop --allowArbitraryExtensions"
-
+    # print("running tsc")
     debugCommand = "node ignore/debug.js " + filename
 
     if allFiles:
@@ -121,7 +132,58 @@ def getErrorsFromFile(filename, allFiles=False):
 
     # print("rawAnswer: ", rawAnswer)
 
-    trash, answer = rawAnswer.split("Error #", 1)
-    answer = "Error #" + answer
+    tsxErrors = ""
+    key = "TSX ERROR #"
+    if key in rawAnswer:
+        trash, tsxErrorTemp = rawAnswer.split(key, 1)
+        tsxErrors += key + tsxErrorTemp
 
-    return answer
+    allErrors = scssErrors + "\n" + tsxErrors
+
+    return allErrors
+
+
+def parseTypeAnswer(answer: str):
+    if "No files found." in answer:
+        return ""
+
+    lines = answer.split("\n")
+    errors = []
+    for line in lines:
+        if line == "":
+            continue
+        if line.startswith("Found"):
+            continue
+        if line.startswith("[GENERATED TYPES]"):
+            continue
+        errors.append(line)
+
+    # output = "\n".join(errors)
+    output = ""
+
+    for i, error in enumerate(errors):
+        # get path and line number from error
+        # error = "Function rgb is missing argument $green. (/Users/turcottep/dev/debugGpt/test-app/app/page.module.scss[199:7]"
+
+        match = re.search(r"\((.*?)\[(.*?)\]\)", error)
+
+        # error = error.split(")")[1].strip()
+        if match:
+            basePath = getTestAppPath() + "/"
+            file_path = match.group(1)
+            relative_file_path = file_path.replace(basePath, "")
+            line_col = match.group(2)
+            line_number = int(line_col.split(":")[0])
+
+            partToRemove = f"({file_path}[{line_col}])"
+            # print("partToRemove: ", partToRemove)
+            error = error.replace(partToRemove, "")
+
+            # print("File path:", file_path)
+            # print("Line number:", line_number)
+
+            output += f"SCSS ERROR #{i + 1} {relative_file_path} line {line_number }): {error}\n"
+        else:
+            output += f"SCSS ERROR #{i + 1} {error}\n"
+
+    return output

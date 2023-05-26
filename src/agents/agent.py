@@ -53,7 +53,8 @@ class Agent:
         userContent = prompt
         plan = ""
 
-        maxIterations = 50
+        maxIterations = 100
+        autoRunIterations = 0
         for i in range(maxIterations):
             # TODO: switch role to user
             userMessage = {"role": "user", "content": userContent}
@@ -79,6 +80,8 @@ class Agent:
                 for line in lines:
                     print("\t", line)
                 print("\n")
+            # print("\n################## prompt from user: \n")
+            # print(userContent)
             resetConsoleColor()
 
             self.speak(True)
@@ -110,24 +113,39 @@ class Agent:
                 print(e)
                 userContent = "INTERNAL ERROR: " + str(e)
 
-            # wait for user input to continue
-            inputted = input(
-                "\nPress Enter to run, Type 't' to tell agent to try again or type anything to send it as feedback:"
-            )
-            if inputted == "":
-                print("Running the command...")
+            if autoRunIterations <= 0:
+                # wait for user input to continue
+                inputted = input(
+                    "\nPress Enter to run, Type 'run -N' to run it for N iterations, Type 't' to tell agent to try again or type anything to send it as feedback:"
+                )
+
+                # check for run command
+                if re.match(r"run\s*-\s*\d*", inputted):
+                    autoRunIterations = int(inputted.split("-")[1])
+                    print("auto running for", autoRunIterations, "iterations...")
+
+                if inputted == "" or autoRunIterations > 0:
+                    print("Running the command...")
+                    output = executeToolOrAgent(functionName, arguments)
+                    userContent = getFeedbackFromCodeExecutionPrompt(
+                        functionName, output  # type: ignore
+                    )
+
+                elif inputted == "t" or inputted == "T":
+                    print("Trying again...")
+                    userContent = getFeedbackFromUserPrompt("Try again")
+                else:
+                    print("sending feedback...")
+                    print("feedback:", inputted)
+                    userContent = getFeedbackFromUserPrompt(inputted)
+
+            else:
+                autoRunIterations -= 1
+                print("Auto Running the command...")
                 output = executeToolOrAgent(functionName, arguments)
                 userContent = getFeedbackFromCodeExecutionPrompt(
                     functionName, output  # type: ignore
                 )
-
-            elif inputted == "t" or inputted == "T":
-                print("Trying again...")
-                userContent = getFeedbackFromUserPrompt("Try again")
-            else:
-                print("sending feedback...")
-                print("feedback:", inputted)
-                userContent = getFeedbackFromUserPrompt(inputted)
 
         return f"INTERNAL ERROR: agent {self.name} reached maxIterations: {maxIterations} without reaching endDebugging"
 
@@ -238,11 +256,11 @@ def parseToolUserAnswer(answer):
     # ```)
 
     try:
-        # explanation, commands = answer.split("$$$", 1)
+        explanation, commands = answer.split("$", 1)
         # commands = commands.split("$$$")[0]
 
-        plan = answer
-        firstCommand = answer
+        plan = explanation
+        firstCommand = commands
 
         # index, answer = answer.split(":::", 1)
         # firstCommand = answer.split(":::", 1)[0].strip()

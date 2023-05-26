@@ -2,7 +2,7 @@ from agents.agent import parseToolUserAnswer
 from cleanConsole import printCode
 from tools.moveFile import moveFileFromTestApp
 from tools.readFile import readCodeFile, readFile, readFileFromTestApp
-from tools.runShell import getErrorsFromFile, runShell
+from tools.runShell import getErrorsFromFile, parseTypeAnswer, runShell
 from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import getAnswersForStackOverflowPost, searchStackOverflow
 from tools.writeFile import writeFileToTestApp, writeFileToWorkspace
@@ -165,17 +165,42 @@ def testConsole():
 
 
 def testGetErrorsFromFile():
-    filename = "components/Header.tsx"
-    errors = getErrorsFromFile(filename)
+    filename = "components/Logo.tsx"
+    errors = getErrorsFromFile(filename, True)
     print("errors\n", errors)
 
 
 def testReadFileFromTestApp():
-    filename = "components/Header.tsx"
+    filename = "components/LandingPage/LandingPage.tsx"
     content = readFileFromTestApp(filename)
     print("content\n", content)
 
 
+def testParseTypeAnswer():
+    message = """Found 8 files. Generating type definitions...
+Function rgb is missing argument $green. (/Users/turcottep/dev/debugGpt/test-app/app/page.module.scss[199:7])
+[GENERATED TYPES] components/App.module.scss.d.ts
+[GENERATED TYPES] components/AppLayout.module.scss.d.ts
+[GENERATED TYPES] components/Button.module.scss.d.ts
+[GENERATED TYPES] components/Footer.module.scss.d.ts
+[GENERATED TYPES] components/Header.module.scss.d.ts
+[GENERATED TYPES] components/LandingPage/LandingPage.module.scss.d.ts
+[GENERATED TYPES] components/Logo.module.scss.d.ts"""
+
+    answer = parseTypeAnswer(message)
+    print("testParseTypeAnswer:\n")
+    print(answer)
+
+
+def testGenerateTypes():
+    command = "npx typed-scss-modules **/*.scss --ignore node_modules/**/*.scss"
+    output = runShell(command)
+    print("output\n", output)
+
+
 if __name__ == "__main__":
     print("testTools.py")
-    testReadFileFromTestApp()
+    # testGenerateTypes()
+    testGetErrorsFromFile()
+
+    # testParseTypeAnswer()

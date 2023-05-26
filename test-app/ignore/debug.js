@@ -33,7 +33,7 @@ allDiagnostics.forEach((diagnostic, i) => {
       "\n",
     );
     console.log(
-      `Error #${i + 1} ${relativeFileName} line ${line + 1}): ${message}`,
+      `TSX ERROR #${i + 1} ${relativeFileName} line ${line + 1}) : ${message}`
     );
     // const lines = diagnostic.file.text.split("\n");
     // console.log(temp, line, character);
