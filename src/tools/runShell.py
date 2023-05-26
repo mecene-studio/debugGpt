@@ -101,3 +101,27 @@ def runShell(commandRaw: str):
             + str(maxExecutionTime)
             + " reached before command finished"
         )
+
+
+BASEFILE = "app/page.tsx"
+
+
+def getErrorsFromFile(filename, allFiles=False):
+    createScssTypesCommand = "npx typed-scss-modules **/*.scss"
+    answerTypes = runShell(createScssTypesCommand)
+
+    # compileTscCommand = f"npx tsc {filename} --jsx react --noEmit --esModuleInterop --allowArbitraryExtensions"
+
+    debugCommand = "node ignore/debug.js " + filename
+
+    if allFiles:
+        debugCommand = f"node ignore/debug.js {BASEFILE} --all"
+
+    rawAnswer = runShell(debugCommand)
+
+    # print("rawAnswer: ", rawAnswer)
+
+    trash, answer = rawAnswer.split("Error #", 1)
+    answer = "Error #" + answer
+
+    return answer

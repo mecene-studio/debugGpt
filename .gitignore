@@ -167,3 +167,4 @@ gcloud/
 
 node_modules/
 test-app/.next/
+test-app/**/*.d.ts

@@ -1,11 +1,11 @@
 from agents.agent import parseToolUserAnswer
 from cleanConsole import printCode
 from tools.moveFile import moveFileFromTestApp
-from tools.readFile import readFile
-from tools.runShell import runShell
+from tools.readFile import readCodeFile, readFile, readFileFromTestApp
+from tools.runShell import getErrorsFromFile, runShell
 from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import getAnswersForStackOverflowPost, searchStackOverflow
-from tools.writeFile import writeFileToWorkspace
+from tools.writeFile import writeFileToTestApp, writeFileToWorkspace
 from tools.listFiles import listFilesFromTestApp
 
 
@@ -16,9 +16,10 @@ def testWriteFile():
     
     with multiple lines"""
 
-    filename = "test.txt"
+    filename = "components/test/test.txt"
 
-    writeFileToWorkspace(filename, content)
+    answer = writeFileToTestApp(filename, content)
+    print("answer\n", answer)
 
 
 def testListFiles():
@@ -38,6 +39,12 @@ def testReadFile():
     filename = "test.txt"
     content = readFile(filename)
     print("content\n", content)
+
+
+def testReadCodeFile():
+    filename = "components/Footer.tsx"
+    content = readCodeFile(filename)
+    print("content: \n\n", content)
 
 
 def testParseDebugGptMessage():
@@ -157,6 +164,18 @@ def testConsole():
     printCode(code)
 
 
+def testGetErrorsFromFile():
+    filename = "components/Header.tsx"
+    errors = getErrorsFromFile(filename)
+    print("errors\n", errors)
+
+
+def testReadFileFromTestApp():
+    filename = "components/Header.tsx"
+    content = readFileFromTestApp(filename)
+    print("content\n", content)
+
+
 if __name__ == "__main__":
     print("testTools.py")
-    testRunShell()
+    testReadFileFromTestApp()

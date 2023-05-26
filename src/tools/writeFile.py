@@ -1,3 +1,4 @@
+import os
 from lib.getPath import (
     getPathFromComponents,
     getPathFromTestApp,
@@ -26,6 +27,9 @@ def writeFileToComponents(filename: str, content: str):
 
 def writeFileToTestApp(filename: str, content: str):
     path = getPathFromTestApp(filename)
+
+    # recursively create directories if they don't exist
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
     try:
         with open(path, "w") as f:

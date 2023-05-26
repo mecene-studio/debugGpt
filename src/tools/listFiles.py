@@ -52,12 +52,17 @@ def listFilesFromPath(path):
         dirs[:] = [d for d in dirs if d not in ignoreList]
 
         level = root.replace(path, "")
+
+        if "ignore" in level:
+            continue
         # indent = "\t" * (level - 1)
         # dirString = os.path.basename(root)
         # # print("dirString", dirString)
         # treeString += "{}{}/\n".format(indent, dirString)
         # subindent = "\t" * (level)
         for f in files:
+            if ".d.ts" in f:
+                continue
             filePath = level + "/" + f + "\n"
             treeString += filePath[1:]
 

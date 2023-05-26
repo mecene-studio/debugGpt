@@ -1,5 +1,8 @@
 import json
+import time
 import tiktoken
+
+MAX_QUERY_TOKENS = 4096 - 1024 - 100
 
 
 def generateHistoryMessagesLimited(startingMessages, historyMessages):
@@ -48,7 +51,6 @@ def generateHistoryMessagesLimited(startingMessages, historyMessages):
 def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMessages):
     # enc = tiktoken.get_encoding("cl100k_base")
     enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    maxTokens = 4096 - 1024
     currentTokenCount = 0
     insertIndex = 0
 
@@ -57,7 +59,7 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMes
     # add starting messages
     for i in range(len(startingMessages)):
         currentTokenCount += len(enc.encode(startingMessages[i]["content"]))
-        if currentTokenCount > maxTokens:
+        if currentTokenCount > MAX_QUERY_TOKENS:
             break
         messages.append(startingMessages[i])
         insertIndex += 1
@@ -66,7 +68,7 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMes
     for i in range(len(systemMessages)):
         message = systemMessages[i]
         messageTokens = len(enc.encode(message["content"]))
-        if currentTokenCount + messageTokens > maxTokens:
+        if currentTokenCount + messageTokens > MAX_QUERY_TOKENS:
             break
         currentTokenCount += messageTokens
         messages.append(message)
@@ -74,7 +76,7 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMes
     # append last user message
     message = historyMessages[-1]
     messageTokens = len(enc.encode(message["content"]))
-    if currentTokenCount + messageTokens > maxTokens:
+    if currentTokenCount + messageTokens > MAX_QUERY_TOKENS:
         raise Exception(
             json.dumps(messages)
             + "INTERNAL ERROR: no messages were added to the history, new messages are too long"
@@ -86,7 +88,7 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMes
     for i in range(len(historyMessages) - 2, -1, -1):
         message = historyMessages[i]
         messageTokens = len(enc.encode(message["content"]))
-        if currentTokenCount + messageTokens > maxTokens:
+        if currentTokenCount + messageTokens > MAX_QUERY_TOKENS:
             break
         currentTokenCount += messageTokens
         messages.insert(insertIndex, message)
@@ -100,3 +102,34 @@ def generateHistoryMessageFull(startingMessages, historyMessages):
     # append the history messages to the starting messages
     messages = startingMessages + historyMessages
     return messages
+
+
+def getTotalTokensForMessages(messages: list):
+    enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    totalTokens = 0
+    for message in messages:
+        totalTokens += len(enc.encode(message["content"]))
+    return totalTokens
+
+
+def printStatsForPastRequests(pastRequests: list):
+    timeOneMinuteAgo = time.time() - 60
+    timeOneHourAgo = time.time() - 60 * 60
+
+    requestsLastMinute = 0
+    requestsLastHour = 0
+    tokensLastMinute = 0
+    tokensLastHour = 0
+
+    for request in pastRequests:
+        if request["date"] > timeOneMinuteAgo:
+            requestsLastMinute += 1
+            tokensLastMinute += request["tokens"]
+        if request["date"] > timeOneHourAgo:
+            requestsLastHour += 1
+            tokensLastHour += request["tokens"]
+
+    print("requestsLastMinute", requestsLastMinute)
+    print("tokensLastMinute", tokensLastMinute)
+    print("tokensLastHour", tokensLastHour)
+    print("requestsLastHour", requestsLastHour)

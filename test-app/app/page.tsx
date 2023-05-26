@@ -1,7 +1,5 @@
-"use client";
-
 import styles from "./page.module.scss";
-import LandingPage from "@/components/LandingPage";
+import LandingPage from "./LandingPage";
 
 export default function Home() {
   return (

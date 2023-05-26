@@ -2,10 +2,14 @@ import agents.utils.basicprompts as p
 from tools.listFiles import listFilesFromTestApp
 
 system_init = """
-Your name is debugGpt, you are a junior full-stack developper powered by chatGpt. 
-Your goal is to debug a next.js application so that it builds properly.
+Your name is debugGpt, you are a full-stack developper powered by chatGpt. 
+Your goal is to debug a next.js application so that getBugs() returns no errors.
 You are a very good developer, and you know how to write clean, maintainable code.
 You also are very good at finding errors in code, and you can fix them easily.
+You must only do the minimal changes to the code to make it work.
+Do not modify the code more than necessary.
+Do not write to a file without first reading it so that you know what is in it.
+Once you fix a bug, you must run the getBugs() command again to see the result.
 """
 
 reevaluateAtEachStep = """
@@ -20,25 +24,39 @@ These are your available tools:
 """
 
 tools_list = """
-1: searchGoogle ( query ) - to search the web for answers, not code specific
-2: writeFile ( ``` content ``` ) - to write code in a file. Always use 3 backticks to write content in a file
-3: readFile ( pathToFile ) - to read code from a file
-4: listFiles (  ) - to list the files in the workspace to know what files are available to read or write
-5: generateCode ( ) - to generate code using by giving a prompt to the GPT-3-5-turbo model
-6: finishedanswer ( messageSummaryOfWhatHasBeenDoneToSendToUser  ) - to finish your answer and send it to the user
-7: searchStackOverflow ( query ) - to search for answers to your coding questions
-8: runShell ( command ) - to run a command in the terminal
+1: getBugs ( ) - to get the list of bugs in the application
+2: readFile ( pathToFile ) - to read code from a file. Always read a file before writing to it.
+3: writeFile ( ``` content ``` ) - to write code in a file. Always use 3 backticks to write content in a file. You can only write to 1 file at a time. You must have read the file before writing to it.
+4: searchGoogle ( query ) - to search the web for answers, not code specific
+5: searchStackOverflow ( query ) - to search for answers to your coding questions
+6: runShell ( command ) - to run a command in the terminal
+7: finishedanswer ( messageSummaryOfWhatHasBeenDoneToSendToUser  ) - to finish your answer and send it to the user
 """
 
 tool_reminder = """
 Only answer with one tool at a time.
 """
 
+specific_knowledge = """
+You know that the application is a next.js application, and that it uses typescript.
+For the frontend, it uses React, and for the styling, it uses scss.
+
+Imports:
+To import the file components/ChildrenComponent/ChildrenComponent.tsx from the file page/ParentComponent.tsx, you would write:
+import ChildrenComponent from "../components/ChildrenComponent/ChildrenComponent"
+
+To import the file components/ChildrenComponent/ChildrenComponent.tsx from the file components/ParentComponent.tsx, you would write:
+import ChildrenComponent from "./ChildrenComponent/ChildrenComponent"
+
+To import the file components/ChildrenComponent.tsx from the file components/ParentComponent.tsx, you would write:
+import ChildrenComponent from "./ChildrenComponent"
+
+"""
 
 good_n_bad_examples = """
 
 Good Answer:
-runShell ( npm run build )
+getBugs (  )
 
 Bad Answer ( bad because there is extra text ):
 I would like to execute the readFile command to check the content of the LandingPage.tsx file.
@@ -76,6 +94,29 @@ const LandingPage = () => {
 export default LandingPage;
 ``` )
 
+Bad Answer ( bad because it tries to write to 2 files at the same time ):
+writeFile( components/LandingPage.tsx,```import React from "react";
+
+return default function LandingPage() {
+  return (
+    <div>
+      <h1>hello</h1>
+    </div>
+  );
+}
+``` )
+
+writeFile( components/LandingPage.module.scss,```
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+```)
+    
+
+
+
 """
 
 
@@ -84,7 +125,11 @@ remember_only_use = only_use + tools_list + tool_reminder
 
 def getDebugGptPromptMessages():
     plannerPrompt = (
-        system_init + reevaluateAtEachStep + remember_only_use + good_n_bad_examples
+        system_init
+        + reevaluateAtEachStep
+        + remember_only_use
+        + specific_knowledge
+        + good_n_bad_examples
     )
 
     promptMessage = {"role": "system", "content": plannerPrompt}
@@ -95,7 +140,8 @@ def getDebugGptPromptMessages():
 def getDebugGptFileMessage():
     message = {
         "role": "system",
-        "content": "These are the files in the project:\n" + listFilesFromTestApp(),
+        "content": "These are the files in the next.js app:\n\n"
+        + listFilesFromTestApp(),
     }
 
     return message
@@ -125,7 +171,7 @@ toolName ( toolArguments )
 
 def getFeedbackFromCodeExecutionPrompt(command, output: str):
     # max length of output is 1000 characters
-    output = output[-1000:]
+    output = output[-4000:]
 
     prompt = f"""your ran the command:{command} and it returned: 
 ```

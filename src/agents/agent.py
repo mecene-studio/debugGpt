@@ -21,8 +21,8 @@ from cleanConsole import printUser, resetConsoleColor, setConsoleColor
 from openaiLib.chatGpt import askChatGpt
 from tools.listFiles import listFilesFromTestApp
 from tools.moveFile import moveFileFromTestApp
-from tools.readFile import readFileFromTestApp
-from tools.runShell import runShell
+from tools.readFile import readCodeFile, readFileFromTestApp
+from tools.runShell import getErrorsFromFile, runShell
 from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import searchStackOverflow
 from tools.writeFile import writeFileToTestApp
@@ -200,6 +200,8 @@ def executeToolOrAgent(functionName, arguments):
         return agent.startLoop(arguments[0])
     elif functionName == "searchGpt":
         return searchGoggleCustom(arguments[0])
+    elif functionName == "getBugs":
+        return getErrorsFromFile("", allFiles=True)
     elif functionName == "runShell":
         return runShell(arguments[0])
     elif functionName == "readFile":
