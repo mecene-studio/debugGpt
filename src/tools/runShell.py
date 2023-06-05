@@ -114,9 +114,7 @@ BASEFILE = "app/page.tsx"
 def getErrorsFromFile(filename, allFiles=False):
     # print("running sccss types")
 
-    command = f"npx typed-scss-modules {filename} --logLevel error"
-    if allFiles:
-        command = "npx typed-scss-modules **/*.scss --ignore node_modules/**/*.scss --logLevel error"
+    command = "npx typed-scss-modules **/*.scss --ignore node_modules/**/*.scss --logLevel error"
 
     # print("command: ", command)
     answerTypes = runShell(command)
@@ -142,9 +140,27 @@ def getErrorsFromFile(filename, allFiles=False):
         trash, tsxErrorTemp = rawAnswer.split(key, 1)
         tsxErrors += key + tsxErrorTemp
 
+    if scssErrors == "" and tsxErrors == "":
+        return "No errors found"
+
     allErrors = scssErrors + "\n" + tsxErrors
 
     return allErrors
+
+
+def getErrorsFromAllFiles():
+    return getErrorsFromFile(BASEFILE, allFiles=True)
+
+
+def getErrorsFromScssFile(filename):
+    command = f"npx typed-scss-modules {filename} --logLevel error"
+
+    # print("command: ", command)
+    answerTypes = runShell(command)
+    # print("answerTypes: ", answerTypes)
+    scssErrors = parseTypeAnswer(answerTypes)
+
+    return scssErrors
 
 
 def parseTypeAnswer(answer: str):

@@ -53,14 +53,15 @@ class Agent:
         userContent = prompt
         plan = ""
 
+        printUser("################## user message : \n" + userContent)
+
         maxIterations = 100
         autoRunIterations = 0
         for i in range(maxIterations):
-            # TODO: switch role to user
             userMessage = {"role": "user", "content": userContent}
 
             # type: ignore
-            printUser("userMessage: \n" + userContent)
+            # printUser("################## answer from user message : \n" + userContent)
 
             self.messageHistory.append(userMessage)
 
@@ -68,21 +69,24 @@ class Agent:
 
             systemMessages = self.addPlan(systemMessages, plan)
 
+            # limit history to the last 4 messages
+            self.messageHistory = self.messageHistory[-4:]
+
             messages = generateHistoryMessagesTikToken(
                 self.promptHistory, self.messageHistory, systemMessages
             )
 
-            setConsoleColor("yellow")
-            print("\n\n################## messages: \n")
-            for i, message in enumerate(messages):
-                print(message.get("role"), ":   \n\n")
-                lines = message.get("content").split("\n")
-                for line in lines:
-                    print("\t", line)
-                print("\n")
-            # print("\n################## prompt from user: \n")
-            # print(userContent)
-            resetConsoleColor()
+            # setConsoleColor("yellow")
+            # print("\n\n################## messages: \n")
+            # for i, message in enumerate(messages):
+            #     print(message.get("role"), ":   \n\n")
+            #     lines = message.get("content").split("\n")
+            #     for line in lines:
+            #         print("\t", line)
+            #     print("\n")
+            # # print("\n################## prompt from user: \n")
+            # # print(userContent)
+            # resetConsoleColor()
 
             self.speak(True)
             print("\n\n################## answer from", self.name, ": \n")
@@ -98,7 +102,7 @@ class Agent:
             self.messageHistory.append(assistantMessage)
 
             userContent = "DEFAULT USER CONTENT"
-            functionName = "DEFAULT FUNCTION NAME"
+            functionName = "NO FUNCTION NAME FOUND"
             arguments = ["DEFAULT ARGUMENTS"]
 
             try:
@@ -106,9 +110,9 @@ class Agent:
 
                 if functionName == "finishedanswer":
                     return f"AGENT FINISHED with message: + \n {arguments[0]}"
-                print("WILL RUN:", functionName)
+                print("WILL RUN COMMAND:", functionName)
                 for i, arg in enumerate(arguments):
-                    print("ARG", i, ": ", arg)
+                    print("ARGUMENT", i, ": ", arg)
             except Exception as e:
                 print(e)
                 userContent = "INTERNAL ERROR: " + str(e)
@@ -127,6 +131,12 @@ class Agent:
                 if inputted == "" or autoRunIterations > 0:
                     print("Running the command...")
                     output = executeToolOrAgent(functionName, arguments)
+
+                    setConsoleColor("yellow")
+                    print("\n################## output from tool: \n")
+                    print(output)
+                    resetConsoleColor()
+
                     userContent = getFeedbackFromCodeExecutionPrompt(
                         functionName, output  # type: ignore
                     )
@@ -175,7 +185,7 @@ class JuniorDev(Agent):
 class DebugGpt(Agent):
     def __init__(self):
         super().__init__()
-        self.name = "JuniorDev"
+        self.name = "DebugGpt"
 
     def getPromptMessages(self):
         return getDebugGptPromptMessages()
@@ -213,6 +223,8 @@ class SeniorDev(Agent):
 
 
 def executeToolOrAgent(functionName, arguments):
+    if functionName == "NO FUNCTION NAME FOUND":
+        return "NO FUNCTION NAME FOUND"
     if functionName == "juniorDevGpt":
         agent = JuniorDev()
         return agent.startLoop(arguments[0])
@@ -222,8 +234,16 @@ def executeToolOrAgent(functionName, arguments):
         return getErrorsFromFile("", allFiles=True)
     elif functionName == "runShell":
         return runShell(arguments[0])
-    elif functionName == "readFile":
+    elif functionName == "openFile":
         return readFileFromTestApp(arguments[0])
+    elif functionName == "editFile":
+        initialPrompt = "You are editing the file below:"
+
+        fileContent = readFileFromTestApp(arguments[0])
+        return (
+            fileContent
+            + "\n\nUse the writeFile tool to overwrite the file with your changes"
+        )
     elif functionName == "listFiles":
         return listFilesFromTestApp()
     elif functionName == "moveFile":
@@ -237,7 +257,7 @@ def executeToolOrAgent(functionName, arguments):
     elif functionName == "endDebugging":
         return "Debugging ended"
     else:
-        return "INTERNAL ERROR: command" + functionName + "not found"
+        return f"INTERNAL ERROR: command `{functionName}` not found"
 
 
 def parseToolUserAnswer(answer):
@@ -257,7 +277,7 @@ def parseToolUserAnswer(answer):
 
     try:
         explanation, commands = answer.split("¬", 1)
-        # commands = commands.split("$$$")[0]
+        commands = commands.split("¬")[0]
 
         plan = explanation
         firstCommand = commands

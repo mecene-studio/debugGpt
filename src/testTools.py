@@ -1,7 +1,7 @@
 from agents.agent import parseToolUserAnswer
 from cleanConsole import printCode
 from tools.moveFile import moveFileFromTestApp
-from tools.readFile import readCodeFile, readFile, readFileFromTestApp
+from tools.readFile import getClosestFile, readCodeFile, readFile, readFileFromTestApp
 from tools.runShell import getErrorsFromFile, parseTypeAnswer, runShell
 from tools.searchGoogle import searchGoggleCustom
 from tools.stackOverflow import getAnswersForStackOverflowPost, searchStackOverflow
@@ -176,6 +176,12 @@ def testReadFileFromTestApp():
     print("content\n", content)
 
 
+def testGetClosestFile():
+    filename = "components/Logo.tsx"
+    answer = getClosestFile(filename)
+    print("answer\n", answer)
+
+
 def testParseTypeAnswer():
     message = """Found 8 files. Generating type definitions...
 Function rgb is missing argument $green. (/Users/turcottep/dev/debugGpt/test-app/app/page.module.scss[199:7])
@@ -201,6 +207,7 @@ def testGenerateTypes():
 if __name__ == "__main__":
     print("testTools.py")
     # testGenerateTypes()
+    # testGetClosestFile()
     testReadFileFromTestApp()
 
     # testParseTypeAnswer()

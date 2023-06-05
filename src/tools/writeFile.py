@@ -11,7 +11,7 @@ def writeFileToWorkspace(filename: str, content: str):
 
     with open(path, "w") as f:
         f.write(content)
-    print("File written successfully to", path)
+    print("File written successfully to", filename)
 
 
 def writeFileToComponents(filename: str, content: str):

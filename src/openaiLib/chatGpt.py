@@ -3,13 +3,15 @@ from dotenv import load_dotenv
 import os
 import time
 
+import requests
+
 from agents.utils.generateHistoryMessages import (
     getTotalTokensForMessages,
     printStatsForPastRequests,
 )
 
 
-model = "gpt-3.5-turbo"  # gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301
+model = "gpt-3.5-turbo"  # "gpt-4", gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301
 
 pastRequests = []
 nbBackoffRetries = 0
@@ -30,7 +32,7 @@ def askChatGpt(promptMessages, max_tokens=1024):
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=model,
             messages=promptMessages,
             temperature=0,
             max_tokens=max_tokens,
@@ -65,3 +67,15 @@ def askChatGpt(promptMessages, max_tokens=1024):
         print("waiting", timeOff, "seconds and trying again")
         time.sleep(timeOff)
         return askChatGpt(promptMessages, max_tokens)
+
+
+def getAvailibleModels():
+    url = "https://api.openai.com/v1/models"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + os.getenv("OPENAI_API_KEY"),  # type: ignore
+    }
+
+    res = requests.get(url, headers=headers)
+    print("res:", res)
+    print("res.json():", res.json())

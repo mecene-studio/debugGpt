@@ -11,13 +11,15 @@
   },
   "dependencies": {
     "@types/node": "20.2.3",
-    "@types/react": "18.2.6",
-    "@types/react-dom": "18.2.4",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
     "@types/react-router": "^5.1.20",
     "lucide-react": "^0.221.0",
     "next": "13.4.3",
     "react": "18.2.0",
+    "react-confetti": "^6.1.0",
     "react-dom": "18.2.0",
+    "react-use-window-size": "^1.0.1",
     "sass": "^1.62.1",
     "typed-scss-modules": "^7.1.0",
     "typescript": "5.0.4"

@@ -1,10 +1,11 @@
-import styles from "./page.module.scss";
-import LandingPage from "./LandingPage";
+"use client";
 
-export default function Home() {
+import App from "../components/App/App";
+
+export default function Page() {
   return (
-    <main className={styles.main}>
-      <LandingPage />
+    <main>
+      <App />
     </main>
   );
 }

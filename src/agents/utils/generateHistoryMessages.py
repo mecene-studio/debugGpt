@@ -38,7 +38,7 @@ def generateHistoryMessagesLimited(startingMessages, historyMessages):
         messages.insert(insertIndex, assistantMessage)
         addedMessages += 2
 
-    print("current token count:", currentTokenCount)
+    # print("current token count:", currentTokenCount)
 
     if addedMessages == 0:
         raise Exception(
@@ -101,7 +101,7 @@ def generateHistoryMessagesTikToken(startingMessages, historyMessages, systemMes
         currentTokenCount += messageTokens
         messages.insert(insertIndex, message)
 
-    print("total token count:", currentTokenCount)
+    # print("total token count:", currentTokenCount)
 
     return messages
 

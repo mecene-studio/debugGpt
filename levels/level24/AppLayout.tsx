@@ -1,9 +1,13 @@
 import React from "react";
-import Header from "./Header/Header";
-import { Footer } from "./Footer/Footer";
 import s from "./AppLayout.module.scss";
+import Footer from "./Footer";
+import Header from "./Header";
 
-const AppLayout: React.FC = ({ children }) => {
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <div className={s.container}>
       <Header />
