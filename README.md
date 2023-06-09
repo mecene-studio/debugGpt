@@ -16,7 +16,8 @@ To use DebugGpt, follow these steps:
 
 1. Navigate to the root/src directory of the DebugGpt application.
 2. Run the command `python main.py`.
-4. DebugGpt will automatically analyze the test-app and provide and fix any errors or issues it finds.
+3. DebugGpt will automatically analyze the test-app and provide and fix any errors or issues it finds.
+4. More levels are available in levels/. Switch what's in the test-app/components/ folder.
 
 ## Contributing
 
