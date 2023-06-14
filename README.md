@@ -9,6 +9,7 @@ DebugGpt is a Python application that uses AI to automatically debug Next.js app
 Watch this youtube video to understand how it works:
 
 [![DebugGPT Youtube video](http://img.youtube.com/vi/nUVBSC6gTic/0.jpg)](http://www.youtube.com/watch?v=nUVBSC6gTic "I Built DebugGPT")
+I built DebugGPT and it Stole My Job (Automatic Code Debugger)
 
 ## Installation
 
