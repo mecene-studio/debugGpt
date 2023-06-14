@@ -1,6 +1,6 @@
 # DebugGpt
 
-DebugGpt is a Python application that uses AI to automatically debug Next.js apps. Specifically, it is designed to debug the test-app.
+DebugGpt is a Python application that uses AI to automatically debug Next.js apps.  
 
 ![Example answer from debugGPT](https://lh3.googleusercontent.com/pw/AJFCJaW0mQLlluV-6hiHo7xnP-zETVKt62tZIrxNheR3AHB_VMKJ313d8nKplCyZigR_3Ti8MCJqCpiuDgqt6FjPRPiJDs3IY1Q9SDX4HHr34jk_co1e3_WlVF5ztk9hBwA9rV_U5w-0AK3WuM0NkJ4WOBmB=w567-h229-s-no?authuser=0)
 
