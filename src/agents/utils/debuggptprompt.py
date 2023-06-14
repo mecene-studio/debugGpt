@@ -230,7 +230,7 @@ If you keep doing this, you will be destroyed by the system.
 Respond using the same template as before:
 
 TEMPLATE:
-Explanation: Think step by step what you need to do to fix the bug. Think of 3 ways to fix the bug. Think of the tools you need to use to fix the bug.
+Explanation: Explain what you are doing and why you are doing it.
 Command: ¬ toolName ( toolArguments ) ¬
 
 ANSWER:
